@@ -1,0 +1,16 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "Back end API for chat-app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon index.js"
+  },
+  "author": "Nick Lansing",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7"
+  }
+}

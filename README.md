@@ -1,5 +1,7 @@
 # chat-app
 
+This is my submission to this full stack dev challenge (currently in progress...).
+
 ## Project setup
 ```
 npm install
