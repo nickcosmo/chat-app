@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoConnect = require('./database').mongoConnect;
+const mongoConnect = require('./util/database').mongoConnect;
+const User = require('./models/user');
 require('dotenv').config();
 
 const app = express();
@@ -14,16 +15,24 @@ app.use((req, res, next) => {
     next();
 });
 
+// TODO: Remove after User model is active
+app.use((req, res, next) => {
+    req.user = new User('Nick', 'test');
+    req.user.id = 12345;
+    next();
+});
+
 // import router
-const chatRoutes = require('./routes/chat');
+const channelRoutes = require('./routes/channel-router');
+const messageRoutes = require('./routes/message-router');
 
 // init middleware and routing
 app.use(bodyParser.json());
-app.use(chatRoutes.routes);
+app.use(channelRoutes.routes);
+app.use(messageRoutes.routes);
 
-let io, server;
 // establish connection
-
+let io, server;
 mongoConnect(async () => {
     server = await app.listen(3000, () => {
         console.log('connected!');
@@ -32,7 +41,7 @@ mongoConnect(async () => {
         cors: {
             origin: 'http://localhost:8080',
             methods: ['GET', 'POST'],
-            credentials: true
+            credentials: true,
         },
     });
     io.on('connection', () => {
