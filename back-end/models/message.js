@@ -12,12 +12,12 @@ class Message {
 
     // CRUD...
     async create() {
-        const db = getDb();
         try {
-            const message = db.collection('message').insertOne(this);
+            const db = getDb();
+            const message = await db.collection('message').insertOne(this);
             if (message) {
                 return {
-                    message: message,
+                    message: message.ops,
                     success: true,
                 };
             }

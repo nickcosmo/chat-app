@@ -25,11 +25,13 @@ app.use((req, res, next) => {
 // import router
 const channelRoutes = require('./routes/channel-router');
 const messageRoutes = require('./routes/message-router');
+const userRoutes = require('./routes/user-router');
 
 // init middleware and routing
 app.use(bodyParser.json());
 app.use(channelRoutes.routes);
 app.use(messageRoutes.routes);
+app.use(userRoutes.routes);
 
 // establish connection
 let io, server;
