@@ -1,13 +1,13 @@
 <template>
-  <v-main class="d-flex align-end grey darken-4">
+  <v-main class="d-flex align-end grey darken-3">
     <v-container>
       <v-row>
         <v-col cols="12">
           <div v-for="message in messages" :key="message.message">
-            <v-divider dark></v-divider>
-            <v-card class="py-5 px-2" dark flat>
+            <!-- <v-divider dark></v-divider> -->
+            <v-card class="py-6 px-2 grey darken-3 white--text" flat>
               <div class="d-flex flex-row align-center">
-                <v-avatar color="red" size="45" class="mr-5"
+                <v-avatar rounded color="red" size="45" class="mr-5"
                   >{{ message.user }}
                 </v-avatar>
                 {{ message.message }}
@@ -17,9 +17,10 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-footer dark app inset height="82">
+    <v-footer class="grey darken-3 px-15 pb-15" app inset height="82">
       <v-text-field
-        background-color="grey lighten-1"
+        background-color="grey darken-1"
+        class="grey--text text--lighten-1"
         flat
         hide-details
         solo
@@ -27,7 +28,7 @@
         v-model="textInput"
       ></v-text-field>
       <v-btn large class="ml-3 blue" @click="pushMessage">
-        <v-icon>mdi-send</v-icon>
+        <v-icon color="white">mdi-send</v-icon>
       </v-btn>
     </v-footer>
   </v-main>
