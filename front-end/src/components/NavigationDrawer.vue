@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-navigation-drawer
-      v-if="!selectChannel"
+      v-if="!selectedChannel"
       v-model="mainDrawer"
       app
       dark
@@ -42,12 +42,7 @@
       <v-list>
         <v-list-item-group>
           <v-list-item v-for="channel in getChannels" :key="channel._id">
-            <v-list-item-title
-              @click="
-                selectChannel = !selectChannel;
-                getSelectedChannel(channel._id);
-              "
-            >
+            <v-list-item-title @click="selectChannel(channel._id)">
               {{ channel.name | capitalize }}
             </v-list-item-title>
           </v-list-item>
@@ -56,14 +51,19 @@
     </v-navigation-drawer>
 
     <v-navigation-drawer
-      v-if="selectChannel"
+      v-if="selectedChannel"
       v-model="channelDrawer"
       app
       dark
       class="grey darken-4"
     >
       <v-app-bar flat class="grey darken-4">
-        <v-btn class="grey darken-4 mr-3" small plain @click="selectChannel = !selectChannel">
+        <v-btn
+          class="grey darken-4 mr-3"
+          small
+          plain
+          @click="selectedChannel = null"
+        >
           <v-icon color="white">mdi-arrow-left</v-icon>
         </v-btn>
         <v-toolbar-title>All Channels</v-toolbar-title>
@@ -90,7 +90,6 @@ export default {
       mainDrawer: true,
       channelDrawer: true,
       dialog: false,
-      selectChannel: false,
       selectedChannel: null,
       newChannelName: null,
       newChannelDesc: null,
@@ -101,7 +100,7 @@ export default {
     ...mapGetters("user", ["getUserId"]),
   },
   methods: {
-    ...mapActions("channel", ["read", "create"]),
+    ...mapActions("channel", ["read", "create", "getMessages"]),
     async postChannel() {
       const payload = {
         userId: this.getUserId,
@@ -109,6 +108,14 @@ export default {
         name: this.newChannelName,
       };
       await this.create(payload);
+    },
+    async selectChannel(id) {
+      this.getSelectedChannel(id);
+      try {
+        await this.getMessages(id);
+      } catch (err) {
+        console.log(err);
+      }
     },
     getSelectedChannel(id) {
       const channel = this.getChannels.filter((channel) => channel._id === id);
