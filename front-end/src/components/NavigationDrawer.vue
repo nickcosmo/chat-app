@@ -2,7 +2,7 @@
   <div>
     <v-navigation-drawer
       v-if="!selectChannel"
-      v-model="allDrawer"
+      v-model="mainDrawer"
       app
       dark
       class="grey darken-4"
@@ -70,11 +70,12 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import { EventBus } from "../event-bus";
 
 export default {
   data() {
     return {
-      allDrawer: true,
+      mainDrawer: true,
       channelDrawer: true,
       dialog: false,
       selectChannel: false,
@@ -99,6 +100,17 @@ export default {
   },
   async created() {
     await this.read();
+
+    if (
+      this.$vuetify.breakpoint.name == "xs" ||
+      this.$vuetify.breakpoint.name == "sm"
+    ) {
+      this.mainDrawer = false;
+    }
+
+    EventBus.$on("showDrawer", () => {
+      this.mainDrawer = !this.mainDrawer;
+    });
   },
 };
 </script>
