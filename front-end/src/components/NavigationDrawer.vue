@@ -13,7 +13,7 @@
 
         <v-dialog v-model="dialog" width="500">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="grey darken-3" v-bind="attrs" v-on="on">
+            <v-btn class="grey darken-3" small plain v-bind="attrs" v-on="on">
               <v-icon color="white">mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -63,14 +63,13 @@
       class="grey darken-4"
     >
       <v-app-bar flat class="grey darken-4">
+        <v-btn class="grey darken-4 mr-3" small plain @click="selectChannel = !selectChannel">
+          <v-icon color="white">mdi-arrow-left</v-icon>
+        </v-btn>
         <v-toolbar-title>All Channels</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn class="grey darken-3" @click="selectChannel = !selectChannel"
-          ><v-icon color="white">mdi-arrow-left</v-icon></v-btn
-        >
       </v-app-bar>
       <v-list>
-        <p class="px-5 mb-5">{{ selectedChannel.name | capitalize }}</p>
+        <p class="px-5 my-5">{{ selectedChannel.name | capitalize }}</p>
         <v-list-item-title class="px-5">{{
           selectedChannel.description
         }}</v-list-item-title>
