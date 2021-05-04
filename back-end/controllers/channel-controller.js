@@ -5,7 +5,7 @@ exports.postAddChannel = async (req, res, next) => {
     const name = req.body.name;
     const description = req.body.description;
     const userId = req.user.id;
-    const members = req.body.members;
+    const members = [];
 
     const newChannel = new Channel(name, description, userId, members);
     try {
