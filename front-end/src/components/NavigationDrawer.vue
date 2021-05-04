@@ -42,8 +42,13 @@
       <v-list>
         <v-list-item-group>
           <v-list-item v-for="channel in getChannels" :key="channel._id">
-            <v-list-item-title @click="selectChannel = !selectChannel">
-              {{ channel.name }}
+            <v-list-item-title
+              @click="
+                selectChannel = !selectChannel;
+                getSelectedChannel(channel._id);
+              "
+            >
+              {{ channel.name | capitalize }}
             </v-list-item-title>
           </v-list-item>
         </v-list-item-group>
@@ -58,12 +63,18 @@
       class="grey darken-4"
     >
       <v-app-bar flat class="grey darken-4">
-        <v-toolbar-title>A Channel!</v-toolbar-title>
+        <v-toolbar-title>All Channels</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn class="grey darken-3" @click="selectChannel = !selectChannel"
           ><v-icon color="white">mdi-arrow-left</v-icon></v-btn
         >
       </v-app-bar>
+      <v-list>
+        <p class="px-5 mb-5">{{ selectedChannel.name | capitalize }}</p>
+        <v-list-item-title class="px-5">{{
+          selectedChannel.description
+        }}</v-list-item-title>
+      </v-list>
     </v-navigation-drawer>
   </div>
 </template>
@@ -71,14 +82,17 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import { EventBus } from "../event-bus";
+import utilMixin from "../mixins/util";
 
 export default {
+  mixins: [utilMixin],
   data() {
     return {
       mainDrawer: true,
       channelDrawer: true,
       dialog: false,
       selectChannel: false,
+      selectedChannel: null,
       newChannelName: null,
       newChannelDesc: null,
     };
@@ -96,6 +110,10 @@ export default {
         name: this.newChannelName,
       };
       await this.create(payload);
+    },
+    getSelectedChannel(id) {
+      const channel = this.getChannels.filter((channel) => channel._id === id);
+      this.selectedChannel = channel[0];
     },
   },
   async created() {
