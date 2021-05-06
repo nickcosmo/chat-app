@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import vuetify from './plugins/vuetify';
-import router from '../routes/router';
+import { router } from '../routes/router';
 import store from '../store/store';
 // import VueSocketIO from 'vue-socket.io';
 
