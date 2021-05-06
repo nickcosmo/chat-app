@@ -31,7 +31,7 @@ class Message {
     static async fetchByChannel(id) {
         const db = getDb();
         try {
-            const messages = db.collection('messages').find({ channelId: id }).toArray();
+            const messages = await db.collection('message').find({ channelId: id }).toArray();
             if (messages) {
                 return {
                     messages: messages,

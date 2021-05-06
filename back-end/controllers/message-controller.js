@@ -4,7 +4,8 @@ const mongodb = require('mongodb');
 exports.getMessagesByChannel = async (req, res, next) => {
     const channelId = req.params.id;
     try {
-        await Message.fetchByChannel(channelId);
+        const response = await Message.fetchByChannel(channelId);
+        res.json(response);
     } catch (err) {
         console.log(err);
     }
