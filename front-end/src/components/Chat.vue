@@ -1,5 +1,4 @@
 <template>
-  <!-- <v-main class="d-flex align-end grey darken-3"> -->
   <v-container>
     <v-row>
       <v-col cols="12">
@@ -25,13 +24,15 @@
         solo
         placeholder="type message"
         v-model="textInput"
-      ></v-text-field>
-      <v-btn large class="ml-3 blue" @click="pushMessage">
-        <v-icon color="white">mdi-send</v-icon>
-      </v-btn>
+      >
+        <template v-slot:append>
+          <v-btn class="ml-3 blue" @click="pushMessage">
+            <v-icon color="white">mdi-send</v-icon>
+          </v-btn>
+        </template></v-text-field
+      >
     </v-footer>
   </v-container>
-  <!-- </v-main> -->
 </template>
 
 <script>
