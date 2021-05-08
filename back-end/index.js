@@ -10,7 +10,7 @@ const app = express();
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, POST, DELETE, PUT, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     next();
 });
@@ -26,12 +26,14 @@ app.use((req, res, next) => {
 const channelRoutes = require('./routes/channel-router');
 const messageRoutes = require('./routes/message-router');
 const userRoutes = require('./routes/user-router');
+const authRoutes = require('./routes/auth-router');
 
 // init middleware and routing
 app.use(bodyParser.json());
 app.use(channelRoutes.routes);
 app.use(messageRoutes.routes);
 app.use(userRoutes.routes);
+app.use(authRoutes.routes);
 
 // establish connection
 let io, server;
