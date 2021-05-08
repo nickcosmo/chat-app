@@ -52,7 +52,7 @@
 
     <v-navigation-drawer
       v-if="selectedChannel"
-      v-model="channelDrawer"
+      v-model="mainDrawer"
       app
       dark
       class="grey darken-4"
@@ -127,7 +127,8 @@ export default {
 
     if (
       this.$vuetify.breakpoint.name == "xs" ||
-      this.$vuetify.breakpoint.name == "sm"
+      this.$vuetify.breakpoint.name == "sm" ||
+      this.$vuetify.breakpoint.name == "md"
     ) {
       this.mainDrawer = false;
     }

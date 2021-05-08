@@ -10,7 +10,10 @@ export default {
     getters: {
         getChannels: (state) => state.channels,
         getChannelMessages: (state) => state.messages,
-        getCurrentChannel: (state) => state.currentChannel,
+        getCurrentChannelName: (state) => {
+            const currChannel = state.channels.filter((channel) => channel._id === state.currentChannel);
+            return currChannel[0];
+        },
     },
     mutations: {
         UPDATE_CHANNELS: (state, channels) => (state.channels = channels),
