@@ -95,5 +95,8 @@ export default {
       this.gitHubSuccess();
     }
   },
+  async mounted() {
+    await this.initGoogleSignIn();
+  },
 };
 </script>

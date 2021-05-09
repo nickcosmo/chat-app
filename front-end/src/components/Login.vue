@@ -28,13 +28,7 @@
               or continue with a social profile
             </v-card-text>
             <v-card-text class="d-flex justify-space-around col-7 mx-auto">
-              <v-btn
-                icon
-                large
-                outlined
-                id="google_btn"
-                @click="initGoogleSignIn"
-              >
+              <v-btn icon large outlined id="google_btn">
                 <v-icon>mdi-google</v-icon>
               </v-btn>
               <v-btn icon large outlined @click="gitHubSignin">
@@ -59,9 +53,9 @@ export default {
     return {
       user: {
         email: null,
-        password: null
-      }
-    }
+        password: null,
+      },
+    };
   },
   methods: {
     ...mapActions("user", ["googleSignin", "gitHubSigninSuccess", "login"]),
@@ -84,6 +78,9 @@ export default {
     if (this.$route.query.code) {
       this.gitHubSuccess();
     }
+  },
+  async mounted() {
+    await this.initGoogleSignIn();
   },
 };
 </script>
