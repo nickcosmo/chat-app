@@ -4,14 +4,22 @@
       <v-row class="justify-center">
         <v-col class="col-12 col-md-5">
           <v-card outlined dark class="pa-10 mx-auto" max-width="400">
-            <v-card-title>Log In Here!</v-card-title>
+            <v-card-title>Sign Up Here!</v-card-title>
             <v-card-text>
+              <v-text-field
+                dense
+                dark
+                prepend-inner-icon="mdi-account-cowboy-hat"
+                outlined
+                label="name"
+                v-model="user.name"
+              ></v-text-field>
               <v-text-field
                 dense
                 dark
                 prepend-inner-icon="mdi-email"
                 outlined
-                label="Email"
+                label="email"
                 v-model="user.email"
               ></v-text-field>
               <v-text-field
@@ -42,7 +50,8 @@
               </v-btn>
             </v-card-text>
             <v-card-text class="text-center">
-              Not a member? <router-link to="signup">Sign up here</router-link>
+              Already a member?
+              <router-link to="login">Log in here</router-link>
             </v-card-text>
           </v-card>
         </v-col>
@@ -58,13 +67,14 @@ export default {
   data() {
     return {
       user: {
+        name: null,
         email: null,
-        password: null
-      }
-    }
+        password: null,
+      },
+    };
   },
   methods: {
-    ...mapActions("user", ["googleSignin", "gitHubSigninSuccess", "login"]),
+    ...mapActions("user", ["googleSignin", "gitHubSigninSuccess", "signup"]),
     async initGoogleSignIn() {
       const elementRef = document.getElementById("google_btn");
       this.googleSignin(elementRef);
@@ -77,7 +87,7 @@ export default {
       await this.gitHubSigninSuccess(this.$route.query.code);
     },
     async submit() {
-      await this.login(this.user);
+      await this.signup(this.user);
     },
   },
   created() {

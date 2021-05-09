@@ -15,13 +15,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// TODO: Remove after User model is active
-app.use((req, res, next) => {
-    req.user = new User('Nick', 'test');
-    req.user.id = 12345;
-    next();
-});
-
 // import router
 const channelRoutes = require('./routes/channel-router');
 const messageRoutes = require('./routes/message-router');

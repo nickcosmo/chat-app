@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const { OAuth2Client } = require('google-auth-library');
 
 exports.gitHubSignin = async (req, res, next) => {
     const response = await fetch(process.env.GITHUB_ACCESS_URI, {
@@ -16,7 +17,6 @@ exports.gitHubSignin = async (req, res, next) => {
     const responseString = await response.text();
     const params = new URLSearchParams(responseString);
     const access_token = params.get('access_token');
-    console.log(access_token);
     const userData = await fetch(process.env.GITHUB_USER_URI, {
         method: 'GET',
         headers: {
@@ -24,16 +24,28 @@ exports.gitHubSignin = async (req, res, next) => {
         },
     });
     if (userData.status === 200) {
-        console.log(await userData.json());
+        const user = await userData.json();
+        req.body.name = user.name;
+        req.body.email = user.login;
+        next();
+    } else {
+        // return some error
     }
 };
 
 exports.googleSignin = async (req, res, next) => {
     const token = req.body.token;
-    const response = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + token, {
-        method: 'POST',
-    });
-    if (response.status === 200) {
-        console.log(await response.json());
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        req.body.name = payload.name;
+        req.body.email = payload.email;
+        next();
+    } catch (err) {
+        console.log(err);
     }
 };

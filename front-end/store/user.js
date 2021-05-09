@@ -3,14 +3,14 @@ import axios from 'axios';
 export default {
     namespaced: true,
     state: {
-        name: null,
-        id: null,
-        image: null,
+        user: null,
     },
     getters: {
         getUserId: (state) => state.id,
     },
-    mutations: {},
+    mutations: {
+        UPDATE_USER: (state, user) => (state.user = user),
+    },
     actions: {
         // eslint-disable-next-line no-unused-vars
         async googleSignin({ commit }, elementRef) {
@@ -23,12 +23,22 @@ export default {
                 auth2.attachClickHandler(
                     elementRef,
                     {},
+                    // success case
                     async function(googleUser) {
-                        await axios.post(process.env.VUE_APP_API + '/google-auth', {
+                        const response = await axios.post(process.env.VUE_APP_API + '/google-auth', {
                             token: googleUser.getAuthResponse().id_token,
+                            method: 'google',
                         });
+                        const user = response.data.user;
+                        const returnUser = {
+                            name: user.name,
+                            _id: user._id,
+                            channels: user.channels,
+                        };
+                        commit('UPDATE_USER', returnUser);
                     },
-                    async function(error) {
+                    // failure case
+                    function(error) {
                         console.log(error);
                     }
                 );
@@ -36,9 +46,55 @@ export default {
         },
         // eslint-disable-next-line no-unused-vars
         async gitHubSigninSuccess({ commit }, code) {
-            await axios.post(process.env.VUE_APP_API + '/github-auth', {
-                code: code,
-            });
+            try {
+                const response = await axios.post(process.env.VUE_APP_API + '/github-auth', {
+                    code: code,
+                    method: 'github',
+                });
+                const user = response.data.user;
+                const returnUser = {
+                    name: user.name,
+                    _id: user._id,
+                    channels: user.channels,
+                };
+                commit('UPDATE_USER', returnUser);
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        // eslint-disable-next-line no-unused-vars
+        async signup({ commit }, userData) {
+            try {
+                const response = await axios.post(process.env.VUE_APP_API + '/auth/signup', userData);
+                if (response.status === 200 && response.success) {
+                    const user = response.data.user;
+                    const returnUser = {
+                        name: user.name,
+                        _id: user._id,
+                        channels: user.channels,
+                    };
+                    commit('UPDATE_USER', returnUser);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        // eslint-disable-next-line no-unused-vars
+        async login({ commit }, userData) {
+            try {
+                const response = await axios.post(process.env.VUE_APP_API + '/auth/login', userData);
+                if (response.status === 200) {
+                    const user = response.data.user;
+                    const returnUser = {
+                        name: user.name,
+                        _id: user._id,
+                        channels: user.channels,
+                    };
+                    commit('UPDATE_USER', returnUser);
+                }
+            } catch (err) {
+                console.log(err);
+            }
         },
     },
 };
