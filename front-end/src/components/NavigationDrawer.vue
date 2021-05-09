@@ -48,6 +48,10 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+      <v-spacer></v-spacer>
+      <template v-slot:append>
+        <UserFooter />
+      </template>
     </v-navigation-drawer>
 
     <v-navigation-drawer
@@ -62,6 +66,7 @@
           class="grey darken-4 mr-3"
           small
           plain
+          icon
           @click="selectedChannel = null"
         >
           <v-icon color="white">mdi-arrow-left</v-icon>
@@ -74,6 +79,9 @@
           selectedChannel.description
         }}</v-list-item-title>
       </v-list>
+      <template v-slot:append>
+        <UserFooter />
+      </template>
     </v-navigation-drawer>
   </div>
 </template>
@@ -82,9 +90,13 @@
 import { mapActions, mapGetters } from "vuex";
 import { EventBus } from "../event-bus";
 import utilMixin from "../mixins/util";
+import UserFooter from "./UserFooter.vue";
 
 export default {
   mixins: [utilMixin],
+  components: {
+    UserFooter,
+  },
   data() {
     return {
       mainDrawer: true,
