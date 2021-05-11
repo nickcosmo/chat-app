@@ -15,18 +15,47 @@ class User {
     async create() {
         try {
             const db = getDb();
-            const checkUser = await User.read(this.email, this.password);
+            const checkUser = await db.collection('users').findOne({ email: this.email });
             if (!checkUser) {
                 let hashedPassword = await bcrypt.hash(this.password, 12);
                 this.password = hashedPassword;
                 const user = await db.collection('users').insertOne(this);
                 if (user) {
+                    const { _id, name, channels } = user.ops[0];
                     return {
-                        user: user.ops,
+                        user: {
+                            _id: _id,
+                            name: name,
+                            channels: channels,
+                        },
+                        success: true,
+                    };
+                }
+            } else {
+                throw new Error('User already exists!');
+            }
+        } catch (err) {
+            return {
+                success: false,
+                message: err.message
+            };
+        }
+    }
+
+    static async read(email, password) {
+        try {
+            const db = getDb();
+            const user = await db.collection('users').findOne({ email: email });
+            if (user) {
+                const match = await bcrypt.compare(password, user.password);
+                if (match) {
+                    return {
+                        user: user,
                         success: true,
                     };
                 }
             }
+            return null;
         } catch (err) {
             console.log(err);
             return {
@@ -58,28 +87,6 @@ class User {
                     success: true,
                 };
             }
-        } catch (err) {
-            console.log(err);
-            return {
-                success: false,
-            };
-        }
-    }
-
-    static async read(email, password) {
-        try {
-            const db = getDb();
-            const user = await db.collection('users').findOne({ email: email });
-            if (user) {
-                const match = await bcrypt.compare(password, user.password);
-                if (match) {
-                    return {
-                        user: user,
-                        success: true,
-                    };
-                }
-            }
-            return null;
         } catch (err) {
             console.log(err);
             return {

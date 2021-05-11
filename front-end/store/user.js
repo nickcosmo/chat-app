@@ -31,10 +31,14 @@ export default {
                     {},
                     // success case
                     async function(googleUser) {
-                        const response = await axios.post(process.env.VUE_APP_API + '/google-auth', {
-                            token: googleUser.getAuthResponse().id_token,
-                            method: 'google',
-                        });
+                        const response = await axios.post(
+                            process.env.VUE_APP_API + '/google-auth',
+                            {
+                                token: googleUser.getAuthResponse().id_token,
+                                method: 'google',
+                            },
+                            { withCredentials: true, credentials: true }
+                        );
                         const user = response.data.user;
                         const returnUser = {
                             name: user.name,
@@ -54,10 +58,17 @@ export default {
         // eslint-disable-next-line no-unused-vars
         async gitHubSigninSuccess({ commit }, code) {
             try {
-                const response = await axios.post(process.env.VUE_APP_API + '/github-auth', {
-                    code: code,
-                    method: 'github',
-                });
+                const response = await axios.post(
+                    process.env.VUE_APP_API + '/github-auth',
+                    {
+                        code: code,
+                        method: 'github',
+                    },
+                    {
+                        withCredentials: true,
+                        credentials: true,
+                    }
+                );
                 const user = response.data.user;
                 const returnUser = {
                     name: user.name,
@@ -72,7 +83,10 @@ export default {
         // eslint-disable-next-line no-unused-vars
         async signup({ commit }, userData) {
             try {
-                const response = await axios.post(process.env.VUE_APP_API + '/auth/signup', userData);
+                const response = await axios.post(process.env.VUE_APP_API + '/auth/signup', userData, {
+                    withCredentials: true,
+                    credentials: true,
+                });
                 if (response.status === 200 && response.success) {
                     const user = response.data.user;
                     const returnUser = {
@@ -89,7 +103,7 @@ export default {
         // eslint-disable-next-line no-unused-vars
         async login({ commit }, userData) {
             try {
-                const response = await axios.post(process.env.VUE_APP_API + '/auth/login', userData);
+                const response = await axios.post(process.env.VUE_APP_API + '/auth/login', userData, { withCredentials: true, credentials: true });
                 if (response.status === 200) {
                     const user = response.data.user;
                     const returnUser = {

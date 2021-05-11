@@ -1,14 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoConnect = require('./util/database').mongoConnect;
-const User = require('./models/user');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
 
 // CORS
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, POST, DELETE, PUT, PATCH');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -23,6 +23,7 @@ const authRoutes = require('./routes/auth-router');
 
 // init middleware and routing
 app.use(bodyParser.json());
+app.use(cookieParser())
 app.use(channelRoutes.routes);
 app.use(messageRoutes.routes);
 app.use(userRoutes.routes);

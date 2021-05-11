@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const jwtUtil = require('../util/auth');
 
 exports.postUser = async (req, res, next) => {
     const name = req.body.name;
@@ -21,9 +22,14 @@ exports.postUser = async (req, res, next) => {
 
     try {
         const response = await newUser.create();
-        return res.json(response);
+        if (response.success) {
+            const token = await jwtUtil.jwtSign(response.user._id);
+            return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
+        } else {
+            throw new Error(response.message);
+        }
     } catch (err) {
-        console.log(err);
+        console.log('postUser err => ', err);
     }
 };
 
