@@ -37,7 +37,7 @@ class User {
         } catch (err) {
             return {
                 success: false,
-                message: err.message
+                message: err.message,
             };
         }
     }
@@ -46,19 +46,26 @@ class User {
         try {
             const db = getDb();
             const user = await db.collection('users').findOne({ email: email });
+            console.log(user);
             if (user) {
                 const match = await bcrypt.compare(password, user.password);
+                const { _id, name, channels } = user;
                 if (match) {
                     return {
-                        user: user,
+                        user: {
+                            _id: _id,
+                            name: name,
+                            channels: channels,
+                        },
                         success: true,
                     };
                 }
+            } else {
+                throw new Error('User not found!');
             }
-            return null;
         } catch (err) {
-            console.log(err);
             return {
+                message: err.message,
                 success: false,
             };
         }

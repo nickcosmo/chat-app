@@ -13,7 +13,8 @@ exports.postUser = async (req, res, next) => {
 
     // if all data was not supplied then send back an error
     if (!name || !password || !email) {
-        return res.json({
+        return res.status(400).json({
+            message: 'Invalid request!',
             success: false,
         });
     }
@@ -44,16 +45,22 @@ exports.getUser = async (req, res, next) => {
 
     // if all data was not supplied then send back an error
     if (!password || !email) {
-        return res.json({
+        return res.status(400).json({
+            message: 'Invalid request!',
             success: false,
         });
     }
 
     try {
         const response = await User.read(email, password);
-        return res.json(response);
+        if (response.success) {
+            const token = await jwtUtil.jwtSign(response.user._id);
+            return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
+        } else {
+            throw new Error(response.message);
+        }
     } catch (err) {
-        console.log(err);
+        console.log('getUser err => ', err);
     }
 };
 
