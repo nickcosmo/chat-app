@@ -15,3 +15,13 @@ exports.jwtSign = async (payload) => {
         return err;
     }
 };
+
+exports.jwtVerify = async (req, res, next) => {
+    const token = req.cookies.jwt;
+
+    if (token) {
+        const verifiedPayload = jwt.verify(token, process.env.JWT_SECRET);
+        req.body._id = verifiedPayload.data;
+        next();
+    }
+};

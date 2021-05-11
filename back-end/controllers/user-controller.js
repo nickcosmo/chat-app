@@ -97,3 +97,14 @@ exports.getUserThirdParty = async (req, res, next) => {
         console.log(err);
     }
 };
+
+exports.autoLogin = async (req, res, next) => {
+    const _id = req.body._id;
+
+    try {
+        // get user details by id
+        console.log(_id);
+    } catch (err) {
+        console.log(err);
+    }
+};
