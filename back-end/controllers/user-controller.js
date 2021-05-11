@@ -30,6 +30,7 @@ exports.postUser = async (req, res, next) => {
             throw new Error(response.message);
         }
     } catch (err) {
+        // TODO throw an error
         console.log('postUser err => ', err);
     }
 };
@@ -60,6 +61,7 @@ exports.getUser = async (req, res, next) => {
             throw new Error(response.message);
         }
     } catch (err) {
+        // TODO throw an error
         console.log('getUser err => ', err);
     }
 };
@@ -72,12 +74,19 @@ exports.postUserThirdParty = async (req, res, next) => {
 
     try {
         const response = await newUser.createThirdParty();
-        return res.json(response);
+        if (response.success) {
+            const token = await jwtUtil.jwtSign(response.user._id);
+            return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
+        } else {
+            throw new Error(response.message);
+        }
     } catch (err) {
+        // TODO throw an error
         console.log(err);
     }
 };
 
+// TODO: Review if this is necessary
 exports.getUserThirdParty = async (req, res, next) => {
     const email = req.body.email;
 

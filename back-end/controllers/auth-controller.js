@@ -29,7 +29,7 @@ exports.gitHubSignin = async (req, res, next) => {
         req.body.email = user.login;
         next();
     } else {
-        // return some error
+        // TODO return some error
     }
 };
 
@@ -47,5 +47,6 @@ exports.googleSignin = async (req, res, next) => {
         next();
     } catch (err) {
         console.log(err);
+        // TODO return some error
     }
 };

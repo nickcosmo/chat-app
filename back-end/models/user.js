@@ -74,21 +74,30 @@ class User {
     async createThirdParty() {
         try {
             const db = getDb();
-            const checkUser = await User.readThirdParty(this.email);
+
+            // check if user exists
+            const checkUser = await db.collection('users').findOne({ email: this.email });
             if (!checkUser) {
+                // if no user found then create new user
                 const user = await db.collection('users').insertOne(this);
+                const { _id, name, channels } = user.ops[0];
                 if (user) {
                     return {
-                        user: user.ops,
+                        user: {
+                            _id: _id,
+                            name: name,
+                            channels: channels,
+                        },
                         success: true,
                     };
                 }
             } else {
+                // if user found then sign the user in
                 const { _id, name, channels } = checkUser.user;
                 return {
                     user: {
-                        name: name,
                         _id: _id,
+                        name: name,
                         channels: channels,
                     },
                     success: true,
@@ -97,11 +106,13 @@ class User {
         } catch (err) {
             console.log(err);
             return {
+                message: err.message,
                 success: false,
             };
         }
     }
 
+    // TODO review if this is necessary!
     static async readThirdParty(email) {
         try {
             const db = getDb();
