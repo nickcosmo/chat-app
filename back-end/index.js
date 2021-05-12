@@ -22,8 +22,8 @@ const userRoutes = require('./routes/user-router');
 const authRoutes = require('./routes/auth-router');
 
 // init middleware and routing
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(cookieParser())
 app.use(channelRoutes.routes);
 app.use(messageRoutes.routes);
 app.use(userRoutes.routes);

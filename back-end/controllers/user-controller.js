@@ -6,17 +6,22 @@ exports.postUser = async (req, res, next) => {
     let password = req.body.password;
     const email = req.body.email;
 
-    // if password is not string then convert to string
-    if (typeof password !== 'string') {
-        password = password.toString();
-    }
-
     // if all data was not supplied then send back an error
     if (!name || !password || !email) {
         return res.status(400).json({
             message: 'Invalid request!',
             success: false,
         });
+    }
+
+    // if password is not string then convert to string
+    if (typeof password !== 'string') {
+        password = password.toString();
+    }
+
+    // if password is not string then convert to string
+    if (typeof email !== 'string') {
+        email = email.toString();
     }
 
     const newUser = new User(name, password, email, []);
@@ -39,17 +44,22 @@ exports.getUser = async (req, res, next) => {
     const password = req.body.password;
     const email = req.body.email;
 
-    // if password is not string then convert to string
-    if (typeof password !== 'string') {
-        password = password.toString();
-    }
-
     // if all data was not supplied then send back an error
     if (!password || !email) {
         return res.status(400).json({
             message: 'Invalid request!',
             success: false,
         });
+    }
+
+    // if password is not string then convert to string
+    if (typeof password !== 'string') {
+        password = password.toString();
+    }
+
+    // if password is not string then convert to string
+    if (typeof email !== 'string') {
+        email = email.toString();
     }
 
     try {
