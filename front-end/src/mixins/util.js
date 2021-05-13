@@ -4,7 +4,6 @@ export default {
             return value.toUpperCase();
         },
         abbreviation: function(value) {
-            console.log(value);
             const nameArr = value.split(' ');
             if (nameArr.length > 1) {
                 return nameArr[0][0].toUpperCase() + nameArr[1][0].toUpperCase();

@@ -39,9 +39,22 @@
         </v-dialog>
       </v-app-bar>
 
-      <v-list>
+      <v-text-field
+        label="Search"
+        outlined
+        clearable
+        class="mx-3 mt-3"
+        prepend-inner-icon="mdi-magnify"
+        @click:prepend-inner="searchChannels"
+      >
+      </v-text-field>
+
+      <v-list class="mt-n3">
         <v-list-item-group>
           <v-list-item v-for="channel in getChannels" :key="channel._id">
+            <v-list-item-icon>
+              <v-avatar color="grey" class="darken-3" size="32" rounded> {{ channel.name | abbreviation }}</v-avatar>
+            </v-list-item-icon>
             <v-list-item-title @click="selectChannel(channel._id)">
               {{ channel.name | capitalize }}
             </v-list-item-title>
@@ -132,6 +145,9 @@ export default {
     getSelectedChannel(id) {
       const channel = this.getChannels.filter((channel) => channel._id === id);
       this.selectedChannel = channel[0];
+    },
+    searchChannels() {
+      console.log("search!");
     },
   },
   async created() {
