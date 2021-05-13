@@ -2,8 +2,9 @@ const getDb = require('../util/database').getDb;
 // const mongodb = require('mongodb');
 
 class Message {
-    constructor(userId, channelId, body, date, id) {
+    constructor(userId, userName, channelId, body, date, id) {
         this.userId = userId;
+        this.userName = userName;
         this.channelId = channelId;
         this.body = body;
         this.date = date;

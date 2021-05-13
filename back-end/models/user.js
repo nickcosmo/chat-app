@@ -46,7 +46,6 @@ class User {
         try {
             const db = getDb();
             const user = await db.collection('users').findOne({ email: email });
-            console.log(user);
             if (user) {
                 const match = await bcrypt.compare(password, user.password);
                 const { _id, name, channels } = user;

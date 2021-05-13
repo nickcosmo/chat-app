@@ -20,10 +20,10 @@ export default {
   },
   mixins: [utilMixin],
   computed: {
-    ...mapGetters("channel", ["getCurrentChannelName"]),
+    ...mapGetters("channel", ["getCurrentChannel"]),
     channelName() {
-      if (this.getCurrentChannelName) {
-        return this.getCurrentChannelName.name;
+      if (this.getCurrentChannel) {
+        return this.getCurrentChannel.name;
       } else {
         return "";
       }

@@ -22,7 +22,9 @@ export default {
   },
   created() {
     openSocket("http://localhost:3000");
-    this.tryLogin();
+    
+    // TODO for auto login
+    // this.tryLogin();
   },
 };
 </script>

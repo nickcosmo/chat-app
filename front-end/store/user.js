@@ -11,11 +11,7 @@ export default {
         getUser: (state) => state.user,
     },
     mutations: {
-        UPDATE_USER: (state, user) => {
-            const nameArr = user.name.split(' ');
-            user.abbrev = nameArr[0][0] + nameArr[1][0];
-            state.user = { ...user };
-        },
+        UPDATE_USER: (state, user) => state.user = { ...user },
     },
     actions: {
         // eslint-disable-next-line no-unused-vars
@@ -112,11 +108,13 @@ export default {
                         channels: user.channels,
                     };
                     commit('UPDATE_USER', returnUser);
+                    router.push({ name: 'chat' });
                 }
             } catch (err) {
-                console.log(err);
+                console.log(err.message);
             }
         },
+        // TODO auto login
         // eslint-disable-next-line no-unused-vars
         async tryLogin({ commit }) {
             try {

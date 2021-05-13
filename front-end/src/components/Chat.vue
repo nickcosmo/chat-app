@@ -7,7 +7,7 @@
           <v-card class="py-6 px-2 grey darken-3 white--text" flat>
             <div class="d-flex flex-row align-center">
               <v-avatar rounded color="red" size="45" class="mr-5">
-                NL
+                {{ message.userName | abbreviation }}
               </v-avatar>
               {{ message.body }}
             </div>
@@ -29,16 +29,18 @@
           <v-btn class="ml-3 blue" @click="pushMessage">
             <v-icon color="white">mdi-send</v-icon>
           </v-btn>
-        </template></v-text-field
-      >
+        </template>
+      </v-text-field>
     </v-footer>
   </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import utilMixin from "@/mixins/util";
 
 export default {
+  mixins: [utilMixin],
   data() {
     return {
       textInput: null,
@@ -47,14 +49,16 @@ export default {
   },
   computed: {
     ...mapGetters("channel", ["getChannelMessages", "getCurrentChannel"]),
+    ...mapGetters("user", ["getUser"]),
   },
   methods: {
     ...mapActions("channel", ["postMessage"]),
     pushMessage() {
       this.postMessage({
-        channelId: this.getCurrentChannel,
+        channelId: this.getCurrentChannel._id,
         body: this.textInput,
-        userId: null,
+        userId: this.getUser._id,
+        userName: this.getUser.name,
         date: Date.now(),
       });
     },

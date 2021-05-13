@@ -13,11 +13,12 @@ exports.getMessagesByChannel = async (req, res, next) => {
 
 exports.postMessage = async (req, res, next) => {
     const userId = req.body.userId;
+    const userName = req.body.userName;
     const channelId = req.body.channelId;
     const body = req.body.body;
     const date = req.body.date;
 
-    const newMessage = new Message(userId, channelId, body, date);
+    const newMessage = new Message(userId, userName, channelId, body, date);
 
     try {
         const response = await newMessage.create();

@@ -20,8 +20,15 @@ exports.jwtVerify = async (req, res, next) => {
     const token = req.cookies.jwt;
 
     if (token) {
-        const verifiedPayload = jwt.verify(token, process.env.JWT_SECRET);
-        req.body._id = verifiedPayload.data;
-        next();
+        try {
+            const verifiedPayload = jwt.verify(token, process.env.JWT_SECRET);
+            req.body._id = verifiedPayload.data;
+            next();
+        } catch (err) {
+            // TODO return err
+            console.log("jwt err => ", err.message);
+        }
+    } else {
+        // TODO return err
     }
 };

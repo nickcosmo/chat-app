@@ -3,15 +3,15 @@ import axios from 'axios';
 export default {
     namespaced: true,
     state: {
-        currentChannel: null,
+        currentChannelId: null,
         channels: [],
         messages: [],
     },
     getters: {
         getChannels: (state) => state.channels,
         getChannelMessages: (state) => state.messages,
-        getCurrentChannelName: (state) => {
-            const currChannel = state.channels.filter((channel) => channel._id === state.currentChannel);
+        getCurrentChannel: (state) => {
+            const currChannel = state.channels.filter((channel) => channel._id === state.currentChannelId);
             return currChannel[0];
         },
     },
@@ -20,7 +20,7 @@ export default {
         ADD_CHANNEL: (state, channel) => state.channels.push(channel),
         UPDATE_MESSAGES: (state, arr) => {
             state.messages = arr[0];
-            state.currentChannel = arr[1];
+            state.currentChannelId = arr[1];
         },
         ADD_MESSAGE: (state, message) => state.messages.push(message),
     },
