@@ -6,6 +6,7 @@ export default {
         currentChannelId: null,
         channels: [],
         messages: [],
+        searchChannels: [],
     },
     getters: {
         getChannels: (state) => state.channels,
@@ -14,15 +15,18 @@ export default {
             const currChannel = state.channels.filter((channel) => channel._id === state.currentChannelId);
             return currChannel[0];
         },
+        getSearchChannels: (state) => state.searchChannels,
     },
     mutations: {
         UPDATE_CHANNELS: (state, channels) => (state.channels = channels),
+        UPDATE_SEARCH_CHANNELS: (state, channels) => (state.searchChannels = channels),
         ADD_CHANNEL: (state, channel) => state.channels.push(channel),
         UPDATE_MESSAGES: (state, arr) => {
             state.messages = arr[0];
             state.currentChannelId = arr[1];
         },
         ADD_MESSAGE: (state, message) => state.messages.push(message),
+        CLEAR_SEARCH_CHANNELS: (state) => (state.searchChannels = []),
     },
     actions: {
         // eslint-disable-next-line no-unused-vars
@@ -61,6 +65,19 @@ export default {
                 commit('UPDATE_MESSAGES', [messages.data.messages, channelId]);
             } catch (err) {
                 console.log(err);
+            }
+        },
+        // eslint-disable-next-line no-unused-vars
+        async searchChannels({ commit }, string) {
+            try {
+                const response = await axios.post(process.env.VUE_APP_API + '/channel/search', string);
+                if (response.status == 200 && response.data.success) {
+                    return commit('UPDATE_SEARCH_CHANNELS', response.data.channels);
+                } else {
+                    throw new Error(response.data.message);
+                }
+            } catch (err) {
+                console.log('search channels err => ', err);
             }
         },
     },
