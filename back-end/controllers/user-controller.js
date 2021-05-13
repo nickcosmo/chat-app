@@ -108,6 +108,8 @@ exports.getUserThirdParty = async (req, res, next) => {
     }
 };
 
+
+// TODO auto login - review if needed 
 exports.autoLogin = async (req, res, next) => {
     const _id = req.body._id;
 

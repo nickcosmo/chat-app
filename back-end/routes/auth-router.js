@@ -17,7 +17,8 @@ router.post('/auth/signup', userController.postUser);
 // /auth/login => POST
 router.post('/auth/login', userController.getUser);
 
+// TODO auto login - review if needed
 // /auth/login => POST
-router.post('/auth/auto-login', jwtVerify, userController.autoLogin);
+// router.post('/auth/auto-login', jwtVerify, userController.autoLogin);
 
 exports.routes = router;
