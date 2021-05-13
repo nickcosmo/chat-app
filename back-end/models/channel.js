@@ -23,6 +23,7 @@ class Channel {
         } catch (err) {
             console.log(err);
             return {
+                message: err.message,
                 success: false,
             };
         }
@@ -41,6 +42,7 @@ class Channel {
         } catch (err) {
             console.log(err);
             return {
+                message: err.message,
                 success: false,
             };
         }
@@ -59,6 +61,29 @@ class Channel {
         } catch (err) {
             console.log(err);
             return {
+                message: err.message,
+                success: false,
+            };
+        }
+    }
+
+    static async searchByString(string) {
+        try {
+            const db = getDb();
+            const channels = await db
+                .collection('channels')
+                .find({ name: { $regex: `.*${string}.*`, $options: 'i' } })
+                .toArray();
+            if (channels) {
+                return {
+                    channels: channels,
+                    success: true,
+                };
+            }
+        } catch (err) {
+            console.log(err);
+            return {
+                message: err.message,
                 success: false,
             };
         }

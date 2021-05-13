@@ -12,6 +12,9 @@ router.get('/channel', channelController.getChannels);
 // /channel/:id => GET
 router.get('/channel/:id', channelController.getChannelById);
 
+// /channel/search => POST
+router.post('/channel/search', channelController.searchChannels);
+
 // /channel => DELETE
 
 exports.routes = router;
