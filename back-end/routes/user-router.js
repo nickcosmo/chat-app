@@ -3,7 +3,7 @@ const userController = require('../controllers/user-controller');
 
 const router = express.Router();
 
-// /channel => POST
-router.post('/user');
+// /user/channels => POST
+router.post('/user/channels', userController.postAddChannel);
 
 exports.routes = router;

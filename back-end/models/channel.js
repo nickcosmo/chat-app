@@ -1,5 +1,5 @@
 const getDb = require('../util/database').getDb;
-// const mongodb = require('mongodb');
+const mongodb = require('mongodb');
 
 class Channel {
     constructor(name, description, userId, members, id) {
@@ -79,6 +79,27 @@ class Channel {
                     channels: channels,
                     success: true,
                 };
+            }
+        } catch (err) {
+            console.log(err);
+            return {
+                message: err.message,
+                success: false,
+            };
+        }
+    }
+
+    static async addMember(channelId, userId, userName) {
+        try {
+            const db = getDb()
+            const id = new mongodb.ObjectID(channelId)
+            const addUser = {
+                _id: userId,
+                name: userName
+            }
+            const channel = db.collection("channels").findOneAndUpdate({ _id: id }, { $push: { channels: addUser } }, { returnOriginal: false });
+            return {
+                channel: channel,
             }
         } catch (err) {
             console.log(err);

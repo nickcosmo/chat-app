@@ -1,6 +1,6 @@
 const getDb = require('../util/database').getDb;
 const bcrypt = require('bcrypt');
-// const mongodb = require('mongodb');
+const mongodb = require('mongodb');
 
 class User {
     constructor(name, password, email, channels, id) {
@@ -102,6 +102,28 @@ class User {
                     success: true,
                 };
             }
+        } catch (err) {
+            console.log(err);
+            return {
+                message: err.message,
+                success: false,
+            };
+        }
+    }
+
+    static async addChannel(userId, channelId, channelName) {
+        const db = getDb();
+        try {
+            const id = new mongodb.ObjectID(userId);
+            const addChannel = {
+                _id: channelId,
+                name: channelName,
+            };
+            const user = await db.collection('users').findOneAndUpdate({ _id: id }, { $push: { channels: addChannel } }, { returnOriginal: false });
+            return {
+                channels: user.value.channels,
+                success: true
+            };
         } catch (err) {
             console.log(err);
             return {

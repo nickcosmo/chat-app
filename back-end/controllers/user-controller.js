@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Channel = require('../models/channel');
 const jwtUtil = require('../util/auth');
 
 exports.postUser = async (req, res, next) => {
@@ -108,8 +109,23 @@ exports.getUserThirdParty = async (req, res, next) => {
     }
 };
 
+exports.postAddChannel = async (req, res, next) => {
+    const channelId = req.body.channelId;
+    const channelName = req.body.channelName;
+    const userId = req.body.userId;
+    const userName = req.body.userName;
 
-// TODO auto login - review if needed 
+    try {
+        const userChannels = await User.addChannel(userId, channelId, channelName);
+        const updatedChannel = await Channel.addMember(channelId, userId, userName);
+        const response = { ...userChannels, ...updatedChannel };
+        return res.status(200).json(response);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// TODO auto login - review if needed
 exports.autoLogin = async (req, res, next) => {
     const _id = req.body._id;
 
