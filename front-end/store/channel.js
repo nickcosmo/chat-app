@@ -3,7 +3,8 @@ import axios from 'axios';
 export default {
     namespaced: true,
     state: {
-        currentChannelId: null,
+        currentChannelName: null,
+        currentChannel: null,
         channels: [],
         messages: [],
         searchChannels: [],
@@ -11,24 +12,25 @@ export default {
     getters: {
         getChannels: (state) => state.channels,
         getChannelMessages: (state) => state.messages,
-        getCurrentChannel: (state) => {
-            const currChannel = state.channels.filter((channel) => channel._id === state.currentChannelId);
-            return currChannel[0];
-        },
+        getCurrentChannel: (state) => state.currentChannel,
         getSearchChannels: (state) => state.searchChannels,
+        getCurrentChannelName: (state) => state.currentChannelName,
     },
     mutations: {
         UPDATE_CHANNELS: (state, channels) => (state.channels = channels),
         UPDATE_SEARCH_CHANNELS: (state, channels) => (state.searchChannels = channels),
         ADD_CHANNEL: (state, channel) => state.channels.push(channel),
-        UPDATE_MESSAGES: (state, arr) => {
-            state.messages = arr[0];
-            state.currentChannelId = arr[1];
+        UPDATE_MESSAGES: (state, messages) => (state.messages = messages),
+        UPDATE_CURRENT_CHANNEL: (state, channel) => {
+            state.currentChannelName = channel.name;
+            state.currentChannel = channel;
         },
         ADD_MESSAGE: (state, message) => state.messages.push(message),
         CLEAR_SEARCH_CHANNELS: (state) => (state.searchChannels = []),
+        REMOVE_CURRENT_CHANNEL: (state) => (state.currentChannel = null),
     },
     actions: {
+        //TODO remove this?
         // eslint-disable-next-line no-unused-vars
         async read({ commit }) {
             try {
@@ -61,8 +63,13 @@ export default {
         // eslint-disable-next-line no-unused-vars
         async getMessages({ commit }, channelId) {
             try {
-                const messages = await axios.get(process.env.VUE_APP_API + '/message/' + channelId);
-                commit('UPDATE_MESSAGES', [messages.data.messages, channelId]);
+                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId);
+                if (response.status === 200 && response.data.success) {
+                    commit('UPDATE_MESSAGES', response.data.messages);
+                    commit('UPDATE_CURRENT_CHANNEL', response.data.channel);
+                } else {
+                    // TODO throw err
+                }
             } catch (err) {
                 console.log(err);
             }

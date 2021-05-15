@@ -83,7 +83,7 @@
 
       <v-list v-else>
         <v-list-item-group>
-          <v-list-item v-for="channel in getChannels" :key="channel._id">
+          <v-list-item v-for="channel in getUser.channels" :key="channel._id">
             <v-list-item-icon>
               <v-avatar color="grey" class="darken-3" size="32" rounded>
                 {{ channel.name | abbreviation }}
@@ -102,7 +102,7 @@
     </v-navigation-drawer>
 
     <v-navigation-drawer
-      v-if="selectedChannel"
+      v-if="getCurrentChannel"
       v-model="mainDrawer"
       app
       dark
@@ -114,16 +114,16 @@
           small
           plain
           icon
-          @click="selectedChannel = null"
+          @click="removeCurrentChannel"
         >
           <v-icon color="white">mdi-arrow-left</v-icon>
         </v-btn>
         <v-toolbar-title>All Channels</v-toolbar-title>
       </v-app-bar>
       <v-list>
-        <p class="px-5 my-5">{{ selectedChannel.name | capitalize }}</p>
+        <p class="px-5 my-5">{{ getCurrentChannel.name | capitalize }}</p>
         <v-list-item-title class="px-5">
-          {{ selectedChannel.description }}
+          {{ getCurrentChannel.description }}
         </v-list-item-title>
       </v-list>
       <template v-slot:append>
@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import { EventBus } from "../event-bus";
 import utilMixin from "../mixins/util";
 import UserFooter from "./UserFooter.vue";
@@ -156,7 +156,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("channel", ["getChannels", "getSearchChannels"]),
+    ...mapGetters("channel", ["getCurrentChannel", "getChannels", "getSearchChannels"]),
     ...mapGetters("user", ["getUserId", "getUser"]),
   },
   watch: {
@@ -167,6 +167,7 @@ export default {
     },
   },
   methods: {
+    // TODO remove read ref?
     ...mapActions("channel", [
       "read",
       "create",
@@ -174,6 +175,7 @@ export default {
       "searchChannels",
     ]),
     ...mapActions("user", ["addChannel"]),
+    ...mapMutations("channel", ["REMOVE_CURRENT_CHANNEL"]),
     async postChannel() {
       const payload = {
         userId: this.getUserId,
@@ -183,17 +185,22 @@ export default {
       await this.create(payload);
     },
     async selectChannel(id) {
-      this.getSelectedChannel(id);
+      // this.getSelectedChannel(id);
       try {
         await this.getMessages(id);
+        this.selectedChannel = true;
       } catch (err) {
         console.log(err);
       }
     },
-    getSelectedChannel(id) {
-      const channel = this.getChannels.filter((channel) => channel._id === id);
-      this.selectedChannel = channel[0];
+    removeCurrentChannel() {
+      this.selectedChannel = false;
+      this.REMOVE_CURRENT_CHANNEL();
     },
+    // getSelectedChannel(id) {
+    //   const channel = this.getChannels.filter((channel) => channel._id === id);
+    //   this.selectedChannel = channel[0];
+    // },
     async pushSearchChannels() {
       await this.searchChannels({ string: this.searchString });
     },
@@ -211,7 +218,8 @@ export default {
     },
   },
   async created() {
-    await this.read();
+    // TODO remove?
+    // await this.read();
 
     if (
       this.$vuetify.breakpoint.name == "xs" ||

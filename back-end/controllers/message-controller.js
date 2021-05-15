@@ -1,11 +1,25 @@
 const Message = require('../models/message');
+const Channel = require('../models/channel');
 const mongodb = require('mongodb');
 
 exports.getMessagesByChannel = async (req, res, next) => {
     const channelId = req.params.id;
     try {
-        const response = await Message.fetchByChannel(channelId);
-        res.json(response);
+        let channel;
+        let response = await Message.fetchByChannel(channelId);
+        if (response.success) {
+            channel = await Channel.fetchById(channelId);
+        } else {
+            // TODO throw error
+        }
+
+        if (channel.success) {
+            response = { ...response, ...channel };
+        } else {
+            // TODO throw error
+        }
+
+        res.status(200).json(response);
     } catch (err) {
         console.log(err);
     }

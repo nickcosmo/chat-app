@@ -48,10 +48,11 @@ class Channel {
         }
     }
 
-    static async fetchById(id) {
+    static async fetchById(channelId) {
         try {
             const db = getDb();
-            const channel = await db.collection('channels').findOne(id);
+            const id = new mongodb.ObjectID(channelId);
+            const channel = await db.collection('channels').findOne({ _id: id });
             if (channel) {
                 return {
                     channel: channel,
@@ -97,7 +98,9 @@ class Channel {
                 _id: userId,
                 name: userName,
             };
-            const channel = await db.collection('channels').findOneAndUpdate({ _id: id }, { $addToSet: { members: addUser } }, { returnOriginal: false });
+            const channel = await db
+                .collection('channels')
+                .findOneAndUpdate({ _id: id }, { $addToSet: { members: addUser } }, { returnOriginal: false });
             return {
                 channel: channel.value,
             };

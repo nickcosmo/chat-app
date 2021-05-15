@@ -9,6 +9,7 @@ router.post('/channel', channelController.postAddChannel);
 // /channel => GET
 router.get('/channel', channelController.getChannels);
 
+// TODO review if needed
 // /channel/:id => GET
 router.get('/channel/:id', channelController.getChannelById);
 
