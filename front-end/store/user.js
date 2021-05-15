@@ -116,13 +116,15 @@ export default {
             }
         },
         // eslint-disable-next-line no-unused-vars
-        async addChannel({ commit }, data) {
+        async addChannel({ commit, dispatch }, data) {
             try {
                 const response = await axios.post(process.env.VUE_APP_API + '/user/channels', data);
-                if (response.status === 200 && response.success) {
+                if (response.status === 200 && response.data.success) {
+                    // eslint-disable-next-line no-unused-vars
                     const { channel, channels } = response.data;
                     commit('UPDATE_USER_CHANNELS', channels);
-                    commit('UPDATE_CURRENT_CHANNEL', channel);
+                    await dispatch('channel/getMessages', channel._id, { root: true });
+                    // commit('UPDATE_CURRENT_CHANNEL', channel);
                 }
             } catch (err) {
                 console.log(err);

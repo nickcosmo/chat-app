@@ -207,6 +207,7 @@ export default {
         channelId: channelId,
       };
       await this.addChannel(data);
+      this.searchString = null;
     },
   },
   async created() {
