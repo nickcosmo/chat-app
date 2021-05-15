@@ -91,16 +91,16 @@ class Channel {
 
     static async addMember(channelId, userId, userName) {
         try {
-            const db = getDb()
-            const id = new mongodb.ObjectID(channelId)
+            const db = getDb();
+            const id = new mongodb.ObjectID(channelId);
             const addUser = {
                 _id: userId,
-                name: userName
-            }
-            const channel = db.collection("channels").findOneAndUpdate({ _id: id }, { $push: { channels: addUser } }, { returnOriginal: false });
+                name: userName,
+            };
+            const channel = await db.collection('channels').findOneAndUpdate({ _id: id }, { $addToSet: { members: addUser } }, { returnOriginal: false });
             return {
-                channel: channel,
-            }
+                channel: channel.value,
+            };
         } catch (err) {
             console.log(err);
             return {

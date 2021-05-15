@@ -11,7 +11,8 @@ export default {
         getUser: (state) => state.user,
     },
     mutations: {
-        UPDATE_USER: (state, user) => state.user = { ...user },
+        UPDATE_USER: (state, user) => (state.user = { ...user }),
+        UPDATE_USER_CHANNELS: (state, channels) => (state.user.channels = channels),
     },
     actions: {
         // eslint-disable-next-line no-unused-vars
@@ -112,6 +113,19 @@ export default {
                 }
             } catch (err) {
                 console.log(err.message);
+            }
+        },
+        // eslint-disable-next-line no-unused-vars
+        async addChannel({ commit }, data) {
+            try {
+                const response = await axios.post(process.env.VUE_APP_API + '/user/channels', data);
+                if (response.status === 200 && response.success) {
+                    const { channel, channels } = response.data;
+                    commit('UPDATE_USER_CHANNELS', channels);
+                    commit('UPDATE_CURRENT_CHANNEL', channel);
+                }
+            } catch (err) {
+                console.log(err);
             }
         },
         // TODO auto login

@@ -119,7 +119,7 @@ class User {
                 _id: channelId,
                 name: channelName,
             };
-            const user = await db.collection('users').findOneAndUpdate({ _id: id }, { $push: { channels: addChannel } }, { returnOriginal: false });
+            const user = await db.collection('users').findOneAndUpdate({ _id: id }, { $addToSet: { channels: addChannel } }, { returnOriginal: false });
             return {
                 channels: user.value.channels,
                 success: true

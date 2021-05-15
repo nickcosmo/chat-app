@@ -57,6 +57,9 @@
           v-for="searchChannel in getSearchChannels"
           :key="searchChannel._id"
         >
+          <v-list-item-title>
+            {{ searchChannel.name | capitalize }}
+          </v-list-item-title>
           <v-list-item-action>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -66,6 +69,8 @@
                   icon
                   v-bind="attrs"
                   v-on="on"
+                  large
+                  @click="pushAddChannel(searchChannel._id, searchChannel.name)"
                 >
                   <v-icon>mdi-plus-circle-outline</v-icon>
                 </v-btn>
@@ -73,9 +78,6 @@
               <span>Add Channel</span>
             </v-tooltip>
           </v-list-item-action>
-          <v-list-item-title>
-            {{ searchChannel.name | capitalize }}
-          </v-list-item-title>
         </v-list-item>
       </v-list>
 
@@ -155,7 +157,7 @@ export default {
   },
   computed: {
     ...mapGetters("channel", ["getChannels", "getSearchChannels"]),
-    ...mapGetters("user", ["getUserId"]),
+    ...mapGetters("user", ["getUserId", "getUser"]),
   },
   watch: {
     searchString: function (newString) {
@@ -171,6 +173,7 @@ export default {
       "getMessages",
       "searchChannels",
     ]),
+    ...mapActions("user", ["addChannel"]),
     async postChannel() {
       const payload = {
         userId: this.getUserId,
@@ -193,6 +196,17 @@ export default {
     },
     async pushSearchChannels() {
       await this.searchChannels({ string: this.searchString });
+    },
+    async pushAddChannel(channelId, channelName) {
+      const userName = this.getUser.name;
+      const userId = this.getUser._id;
+      const data = {
+        userName: userName,
+        userId: userId,
+        channelName: channelName,
+        channelId: channelId,
+      };
+      await this.addChannel(data);
     },
   },
   async created() {
