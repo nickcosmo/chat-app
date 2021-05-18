@@ -2,17 +2,37 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <div v-for="message in getChannelMessages" :key="message._id">
-          <!-- <v-divider dark></v-divider> -->
-          <v-card class="py-6 px-2 grey darken-3 white--text" flat>
-            <div class="d-flex flex-row align-center">
-              <v-avatar rounded color="red" size="45" class="mr-5">
-                {{ message.userName | abbreviation }}
-              </v-avatar>
-              {{ message.body }}
-            </div>
-          </v-card>
-        </div>
+        <v-list dark class="grey darken-3">
+          <v-list-item
+            two-line
+            v-for="message in getChannelMessages"
+            :key="message._id"
+            class="grey darken-3"
+          >
+            <!-- <v-divider dark></v-divider> -->
+            <v-list-item-avatar
+              rounded
+              color="red"
+              size="45"
+              class="justify-center"
+            >
+              {{ message.userName | abbreviation }}
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-subtitle>
+                <span class="text-subtitle-1">
+                  {{ message.userName }}
+                </span>
+                <span class="ml-3">
+                  {{ message.date }}
+                </span>
+              </v-list-item-subtitle>
+              <v-list-item-title class="mt-1">
+                {{ message.body }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
       </v-col>
     </v-row>
     <v-footer class="grey darken-3 px-15 pb-15" app inset height="82">
