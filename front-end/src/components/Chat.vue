@@ -36,8 +36,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import utilMixin from "@/mixins/util";
+import socket from "@/socket";
+// import goTo from "vuetify/es5/services/goto";
 
 export default {
   mixins: [utilMixin],
@@ -50,8 +52,12 @@ export default {
   computed: {
     ...mapGetters("channel", ["getChannelMessages", "getCurrentChannel"]),
     ...mapGetters("user", ["getUser"]),
+    pageHeight() {
+      return document.body.scrollHeight;
+    },
   },
   methods: {
+    ...mapMutations("channel", ["ADD_CHANNEL", "ADD_MESSAGE"]),
     ...mapActions("channel", ["postMessage"]),
     pushMessage() {
       this.postMessage({
@@ -62,6 +68,24 @@ export default {
         date: Date.now(),
       });
     },
+  },
+  created() {
+    this.$vuetify.goTo(this.pageHeight);
+
+    // init socket listeners
+    socket.connect();
+
+    socket.on("newMessage", (payload) => {
+      if (payload.success) {
+        this.ADD_MESSAGE(payload.message[0]);
+        this.$vuetify.goTo(this.pageHeight);
+      }
+    });
+  },
+  destroyed() {
+    // turn socket listeners off!
+    socket.off("newMessage");
+    socket.disconnect();
   },
 };
 </script>

@@ -102,7 +102,7 @@
     </v-navigation-drawer>
 
     <v-navigation-drawer
-      v-if="getCurrentChannel"
+      v-if="selectedChannel"
       v-model="mainDrawer"
       app
       dark
@@ -114,7 +114,7 @@
           small
           plain
           icon
-          @click="removeCurrentChannel"
+          @click="selectedChannel = !selectedChannel"
         >
           <v-icon color="white">mdi-arrow-left</v-icon>
         </v-btn>
@@ -156,8 +156,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("channel", ["getCurrentChannel", "getChannels", "getSearchChannels"]),
+    ...mapGetters("channel", [
+      "getCurrentChannel",
+      "getChannels",
+      "getSearchChannels",
+    ]),
     ...mapGetters("user", ["getUserId", "getUser"]),
+    pageHeight() {
+      return document.body.scrollHeight;
+    },
   },
   watch: {
     searchString: function (newString) {
@@ -189,6 +196,7 @@ export default {
       try {
         await this.getMessages(id);
         this.selectedChannel = true;
+        this.$vuetify.goTo(this.pageHeight);
       } catch (err) {
         console.log(err);
       }

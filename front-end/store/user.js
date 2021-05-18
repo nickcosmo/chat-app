@@ -98,7 +98,7 @@ export default {
             }
         },
         // eslint-disable-next-line no-unused-vars
-        async login({ commit }, userData) {
+        async login({ commit, dispatch }, userData) {
             try {
                 const response = await axios.post(process.env.VUE_APP_API + '/auth/login', userData, { withCredentials: true, credentials: true });
                 if (response.status === 200) {
@@ -109,10 +109,13 @@ export default {
                         channels: user.channels,
                     };
                     commit('UPDATE_USER', returnUser);
+                    if (returnUser.channels.length > 0) {
+                        await dispatch('channel/getMessages', returnUser.channels[0]._id, { root: true });
+                    }
                     router.push({ name: 'chat' });
                 }
             } catch (err) {
-                console.log(err.message);
+                console.log('login err => ', err.message);
             }
         },
         // eslint-disable-next-line no-unused-vars

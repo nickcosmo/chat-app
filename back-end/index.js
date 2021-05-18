@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoConnect = require('./util/database').mongoConnect;
 const cookieParser = require('cookie-parser');
+const io = require('./socket');
 require('dotenv').config();
 
 const app = express();
@@ -30,19 +31,25 @@ app.use(userRoutes.routes);
 app.use(authRoutes.routes);
 
 // establish connection
-let io, server;
+let server;
 mongoConnect(async () => {
     server = await app.listen(3000, () => {
         console.log('connected!');
     });
-    io = require('socket.io')(server, {
-        cors: {
-            origin: 'http://localhost:8080',
-            methods: ['GET', 'POST'],
-            credentials: true,
-        },
-    });
-    io.on('connection', () => {
-        console.log('a client has connected!');
+    io.init(server);
+    io.getIO().on('connection', (socket) => {
+        socket.on('channel-connect', ({ channelId }) => {
+            console.log(`Joining Channel: ${channelId}`);
+            socket.join(channelId);
+        });
+
+        socket.on('channel-leave', ({ channelId }) => {
+            console.log(`Leaving Channel: ${channelId}`);
+            socket.leave(channelId);
+        });
+
+        socket.on('disconnect', (socket) => {
+            console.log('disconnected');
+        });
     });
 });

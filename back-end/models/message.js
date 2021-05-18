@@ -15,7 +15,7 @@ class Message {
     async create() {
         try {
             const db = getDb();
-            const message = await db.collection('message').insertOne(this);
+            const message = await db.collection('messages').insertOne(this);
             if (message) {
                 return {
                     message: message.ops,
@@ -32,7 +32,7 @@ class Message {
     static async fetchByChannel(id) {
         const db = getDb();
         try {
-            const messages = await db.collection('message').find({ channelId: id }).toArray();
+            const messages = await db.collection('messages').find({ channelId: id }).toArray();
             if (messages) {
                 return {
                     messages: messages,

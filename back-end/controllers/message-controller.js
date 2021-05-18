@@ -1,5 +1,6 @@
 const Message = require('../models/message');
 const Channel = require('../models/channel');
+const io = require('../socket.js');
 const mongodb = require('mongodb');
 
 exports.getMessagesByChannel = async (req, res, next) => {
@@ -36,6 +37,9 @@ exports.postMessage = async (req, res, next) => {
 
     try {
         const response = await newMessage.create();
+        io.getIO()
+            .to(channelId)
+            .emit('newMessage', { ...response });
         res.json(response);
     } catch (err) {
         console.log(err);

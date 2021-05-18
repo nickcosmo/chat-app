@@ -1,4 +1,5 @@
 import axios from 'axios';
+import socket from '@/socket';
 
 export default {
     namespaced: true,
@@ -54,19 +55,28 @@ export default {
         // eslint-disable-next-line no-unused-vars
         async postMessage({ commit }, messageData) {
             try {
+                // eslint-disable-next-line no-unused-vars
                 const newMessage = await axios.post(process.env.VUE_APP_API + '/message', messageData);
-                commit('ADD_MESSAGE', newMessage.data.message[0]);
             } catch (err) {
                 console.log(err);
             }
         },
         // eslint-disable-next-line no-unused-vars
-        async getMessages({ commit }, channelId) {
+        async getMessages({ getters, commit }, channelId) {
             try {
+                if (getters.getCurrentChannel) {
+                    socket.emit('channel-leave', {
+                        channelId: getters.getCurrentChannel._id,
+                    });
+                }
+
                 const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId);
                 if (response.status === 200 && response.data.success) {
                     commit('UPDATE_MESSAGES', response.data.messages);
                     commit('UPDATE_CURRENT_CHANNEL', response.data.channel);
+                    socket.emit('channel-connect', {
+                        channelId: getters.getCurrentChannel._id,
+                    });
                 } else {
                     // TODO throw err
                 }
