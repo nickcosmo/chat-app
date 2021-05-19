@@ -13,6 +13,7 @@ export default {
     mutations: {
         UPDATE_USER: (state, user) => (state.user = { ...user }),
         UPDATE_USER_CHANNELS: (state, channels) => (state.user.channels = channels),
+        PUSH_USER_CHANNEL: (state, channel) => state.user.channels.push(channel),
     },
     actions: {
         // eslint-disable-next-line no-unused-vars

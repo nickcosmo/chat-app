@@ -5,20 +5,16 @@ export default {
     namespaced: true,
     state: {
         currentChannel: null,
-        channels: [],
         messages: [],
         searchChannels: [],
     },
     getters: {
-        getChannels: (state) => state.channels,
         getChannelMessages: (state) => state.messages,
         getCurrentChannel: (state) => state.currentChannel,
         getSearchChannels: (state) => state.searchChannels,
     },
     mutations: {
-        UPDATE_CHANNELS: (state, channels) => (state.channels = channels),
         UPDATE_SEARCH_CHANNELS: (state, channels) => (state.searchChannels = channels),
-        ADD_CHANNEL: (state, channel) => state.channels.push(channel),
         UPDATE_MESSAGES: (state, messages) => (state.messages = messages),
         UPDATE_CURRENT_CHANNEL: (state, channel) => (state.currentChannel = channel),
         ADD_MESSAGE: (state, message) => state.messages.push(message),
@@ -27,21 +23,19 @@ export default {
     actions: {
         //TODO remove this?
         // eslint-disable-next-line no-unused-vars
-        async read({ commit }) {
-            try {
-                const channels = await axios.get(process.env.VUE_APP_API + '/channel');
-                if (channels.data.success) {
-                    commit('UPDATE_CHANNELS', channels.data.channels);
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        },
+        // async read({ commit }) {
+        //     try {
+        //         const channels = await axios.get(process.env.VUE_APP_API + '/channel');
+
+        //     } catch (err) {
+        //         console.log(err);
+        //     }
+        // },
         // eslint-disable-next-line no-unused-vars
         async create({ commit }, channelData) {
             try {
                 const newChannel = await axios.post(process.env.VUE_APP_API + '/channel', channelData);
-                commit('ADD_CHANNEL', newChannel.data.channel[0]);
+                commit('user/PUSH_USER_CHANNEL', newChannel.data.channel[0], {root: true});
             } catch (err) {
                 console.log(err);
             }

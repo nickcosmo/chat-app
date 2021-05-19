@@ -1,16 +1,21 @@
 const Channel = require('../models/channel');
+const User = require('../models/user');
 const mongodb = require('mongodb');
 
 exports.postAddChannel = async (req, res, next) => {
     const name = req.body.name;
     const description = req.body.description;
     const userId = req.body.userId;
-    const members = [{ name: req.body.name, userId: req.body.userId }];
+    const userName = req.body.userName;
+    const members = [{ userName: req.body.userName, userId: req.body.userId }];
 
     const newChannel = new Channel(name, description, userId, members);
     try {
         const response = await newChannel.create();
-        return res.json(response);
+        if (response.success) {
+            await User.addChannel(userId, response.channel[0]._id, response.channel[0].name);
+            return res.json(response);
+        }
     } catch (err) {
         console.log(err);
     }

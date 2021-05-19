@@ -73,7 +73,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("channel", ["getChannels", "getSearchChannels"]),
+    ...mapGetters("channel", ["getSearchChannels"]),
     ...mapGetters("user", ["getUserId", "getUser"]),
     pageHeight() {
       return document.body.scrollHeight;
@@ -90,6 +90,7 @@ export default {
         name: channel[0],
       };
       await this.create(payload);
+      this.dialog = false;
     },
     async selectChannel(id) {
       try {
