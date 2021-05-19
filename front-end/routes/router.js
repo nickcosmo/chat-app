@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from '../store/store';
 
 Vue.use(VueRouter);
 
@@ -20,6 +21,18 @@ const router = new VueRouter({
             path: '/',
             name: 'chat',
             component: () => import(/* webpackChunkName: "main" */ '../src/components/Main.vue'),
+            beforeEnter: (to, from, next) => {
+                if (!store.getters['user/getUser']) {
+                    next({ name: 'login' });
+                } else {
+                    next();
+                }
+            },
+        },
+        {
+            path: '*',
+            name: '404',
+            component: () => import(/* webpackChunkName: "404" */ '../src/components/404.vue'),
         },
     ],
 });
