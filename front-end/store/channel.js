@@ -4,7 +4,6 @@ import socket from '@/socket';
 export default {
     namespaced: true,
     state: {
-        currentChannelName: null,
         currentChannel: null,
         channels: [],
         messages: [],
@@ -15,20 +14,15 @@ export default {
         getChannelMessages: (state) => state.messages,
         getCurrentChannel: (state) => state.currentChannel,
         getSearchChannels: (state) => state.searchChannels,
-        getCurrentChannelName: (state) => state.currentChannelName,
     },
     mutations: {
         UPDATE_CHANNELS: (state, channels) => (state.channels = channels),
         UPDATE_SEARCH_CHANNELS: (state, channels) => (state.searchChannels = channels),
         ADD_CHANNEL: (state, channel) => state.channels.push(channel),
         UPDATE_MESSAGES: (state, messages) => (state.messages = messages),
-        UPDATE_CURRENT_CHANNEL: (state, channel) => {
-            state.currentChannelName = channel.name;
-            state.currentChannel = channel;
-        },
+        UPDATE_CURRENT_CHANNEL: (state, channel) => (state.currentChannel = channel),
         ADD_MESSAGE: (state, message) => state.messages.push(message),
         CLEAR_SEARCH_CHANNELS: (state) => (state.searchChannels = []),
-        REMOVE_CURRENT_CHANNEL: (state) => (state.currentChannel = null),
     },
     actions: {
         //TODO remove this?
