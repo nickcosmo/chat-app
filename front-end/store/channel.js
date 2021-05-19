@@ -72,6 +72,10 @@ export default {
 
                 const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId);
                 if (response.status === 200 && response.data.success) {
+                    response.data.messages.forEach((message) => {
+                        message.date = new Date(message.date);
+                    });
+
                     commit('UPDATE_MESSAGES', response.data.messages);
                     commit('UPDATE_CURRENT_CHANNEL', response.data.channel);
                     socket.emit('channel-connect', {

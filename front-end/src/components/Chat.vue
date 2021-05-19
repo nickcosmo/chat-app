@@ -59,14 +59,12 @@
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import utilMixin from "@/mixins/util";
 import socket from "@/socket";
-// import goTo from "vuetify/es5/services/goto";
 
 export default {
   mixins: [utilMixin],
   data() {
     return {
       textInput: null,
-      // messages: [],
     };
   },
   computed: {
@@ -85,7 +83,7 @@ export default {
         body: this.textInput,
         userId: this.getUser._id,
         userName: this.getUser.name,
-        date: Date.now(),
+        date: new Date(),
       });
     },
   },
@@ -97,7 +95,9 @@ export default {
 
     socket.on("newMessage", (payload) => {
       if (payload.success) {
-        this.ADD_MESSAGE(payload.message[0]);
+        const message = payload.message[0];
+        message.date = new Date(message.date);
+        this.ADD_MESSAGE(message);
         this.$vuetify.goTo(this.pageHeight);
       }
     });
