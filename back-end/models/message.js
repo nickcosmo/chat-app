@@ -32,7 +32,20 @@ class Message {
     static async fetchByChannel(id) {
         const db = getDb();
         try {
-            const messages = await db.collection('messages').find({ channelId: id }).toArray();
+            const messages = await db
+                .collection('messages')
+                .find({ channelId: id })
+                // .aggregate([
+                //     {
+                //         $lookup: {
+                //             from: 'channels',
+                //             localField: 'channelId',
+                //             foreignField: '_id',
+                //             as: 'channel',
+                //         },
+                //     },
+                // ])
+                .toArray();
             if (messages) {
                 return {
                     messages: messages,

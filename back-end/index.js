@@ -38,11 +38,13 @@ mongoConnect(async () => {
     });
     io.init(server);
     io.getIO().on('connection', (socket) => {
+        // TODO check if already in channel first
         socket.on('channel-connect', ({ channelId }) => {
             console.log(`Joining Channel: ${channelId}`);
             socket.join(channelId);
         });
 
+        // TODO check if in channel first
         socket.on('channel-leave', ({ channelId }) => {
             console.log(`Leaving Channel: ${channelId}`);
             socket.leave(channelId);
