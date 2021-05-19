@@ -1,6 +1,6 @@
 <template>
   <v-footer class="justify-center align-center white--text" height="62">
-    <v-avatar rounded color="red" size="45" class="mr-5">
+    <v-avatar rounded color="red" size="42" class="mr-5">
       {{ getUser.name | abbreviation }}
     </v-avatar>
     {{ getUser.name }}

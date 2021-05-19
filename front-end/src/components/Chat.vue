@@ -7,13 +7,13 @@
             two-line
             v-for="message in getChannelMessages"
             :key="message._id"
-            class="grey darken-3"
+            class="grey darken-3 my-2"
           >
             <!-- <v-divider dark></v-divider> -->
             <v-list-item-avatar
               rounded
               color="red"
-              size="45"
+              size="42"
               class="justify-center"
             >
               {{ message.userName | abbreviation }}
