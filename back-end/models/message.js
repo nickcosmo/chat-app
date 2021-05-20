@@ -29,22 +29,15 @@ class Message {
         }
     }
 
-    static async fetchByChannel(id) {
+    static async fetchByChannel(id, page) {
         const db = getDb();
         try {
             const messages = await db
                 .collection('messages')
                 .find({ channelId: id })
-                // .aggregate([
-                //     {
-                //         $lookup: {
-                //             from: 'channels',
-                //             localField: 'channelId',
-                //             foreignField: '_id',
-                //             as: 'channel',
-                //         },
-                //     },
-                // ])
+                .sort({ date: 1 })
+                .skip((page - 1) * 20)
+                .limit(20)
                 .toArray();
             if (messages) {
                 return {

@@ -7,11 +7,13 @@ export default {
         currentChannel: null,
         messages: [],
         searchChannels: [],
+        page: 1,
     },
     getters: {
         getChannelMessages: (state) => state.messages,
         getCurrentChannel: (state) => state.currentChannel,
         getSearchChannels: (state) => state.searchChannels,
+        getPage: (state) => state.page,
     },
     mutations: {
         UPDATE_SEARCH_CHANNELS: (state, channels) => (state.searchChannels = channels),
@@ -19,6 +21,8 @@ export default {
         UPDATE_CURRENT_CHANNEL: (state, channel) => (state.currentChannel = channel),
         ADD_MESSAGE: (state, message) => state.messages.push(message),
         CLEAR_SEARCH_CHANNELS: (state) => (state.searchChannels = []),
+        ADD_PAGE: (state) => state.page++,
+        RESET_PAGE: (state) => (state.page = 1),
     },
     actions: {
         //TODO remove this?
@@ -35,7 +39,7 @@ export default {
         async create({ commit }, channelData) {
             try {
                 const newChannel = await axios.post(process.env.VUE_APP_API + '/channel', channelData);
-                commit('user/PUSH_USER_CHANNEL', newChannel.data.channel[0], {root: true});
+                commit('user/PUSH_USER_CHANNEL', newChannel.data.channel[0], { root: true });
             } catch (err) {
                 console.log(err);
             }
@@ -58,7 +62,10 @@ export default {
                     });
                 }
 
-                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId);
+                let page = getters.getPage;
+                page = page.toString();
+
+                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId + '/?page=' + page);
                 if (response.status === 200 && response.data.success) {
                     response.data.messages.forEach((message) => {
                         message.date = new Date(message.date);
@@ -66,6 +73,7 @@ export default {
 
                     commit('UPDATE_MESSAGES', response.data.messages);
                     commit('UPDATE_CURRENT_CHANNEL', response.data.channel);
+                    commit('ADD_PAGE');
                     socket.emit('channel-connect', {
                         channelId: getters.getCurrentChannel._id,
                     });

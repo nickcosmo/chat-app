@@ -5,9 +5,12 @@ const mongodb = require('mongodb');
 
 exports.getMessagesByChannel = async (req, res, next) => {
     const channelId = req.params.id;
+    let page = req.query.page;
+    page = parseInt(page);
+
     try {
         let channel;
-        let response = await Message.fetchByChannel(channelId);
+        let response = await Message.fetchByChannel(channelId, page);
         if (response.success) {
             channel = await Channel.fetchById(channelId);
         } else {

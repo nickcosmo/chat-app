@@ -11,7 +11,7 @@
       <v-list-item-title class="px-4">
         {{ getCurrentChannel.description }}
       </v-list-item-title>
-      <v-divider class="my-8"></v-divider>
+      <v-divider class="my-8 mx-4"></v-divider>
       <v-list-item-title class="pl-4">MEMBERS</v-list-item-title>
       <v-list-item
         v-for="member in getCurrentChannel.members"

@@ -1,8 +1,15 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
+  <v-container id="container">
+    <v-row class="d-flex justify-center">
+      <v-col>
         <v-list dark class="grey darken-3">
+          <div class="d-flex justify-center">
+            <v-progress-circular
+              indeterminate
+              color="grey darken-4"
+              v-if="paginationRequest"
+            ></v-progress-circular>
+          </div>
           <v-list-item
             two-line
             v-for="message in getChannelMessages"
@@ -65,6 +72,7 @@ export default {
   data() {
     return {
       textInput: null,
+      paginationRequest: false,
     };
   },
   computed: {
@@ -76,7 +84,7 @@ export default {
   },
   methods: {
     ...mapMutations("channel", ["ADD_CHANNEL", "ADD_MESSAGE"]),
-    ...mapActions("channel", ["postMessage"]),
+    ...mapActions("channel", ["postMessage", "getMessages"]),
     pushMessage() {
       this.postMessage({
         channelId: this.getCurrentChannel._id,
@@ -85,6 +93,11 @@ export default {
         userName: this.getUser.name,
         date: new Date(),
       });
+    },
+    async paginateMessages() {
+      this.paginationRequest = true;
+      // Paginate messages!!!
+      this.paginationRequest = false;
     },
   },
   created() {
@@ -106,6 +119,13 @@ export default {
     // turn socket listeners off!
     socket.off("newMessage");
     socket.disconnect();
+  },
+  mounted() {
+    window.addEventListener("scroll", () => {
+      if (document.documentElement.scrollTop === 0) {
+        this.paginateMessages();
+      }
+    });
   },
 };
 </script>
