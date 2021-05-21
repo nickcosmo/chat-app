@@ -35,11 +35,12 @@ class Message {
             const messages = await db
                 .collection('messages')
                 .find({ channelId: id })
-                .sort({ date: 1 })
+                .sort({ date: -1 })
                 .skip((page - 1) * 20)
                 .limit(20)
                 .toArray();
             if (messages) {
+                messages = messages.reverse();
                 return {
                     messages: messages,
                     success: true,

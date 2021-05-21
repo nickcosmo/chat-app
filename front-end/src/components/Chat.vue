@@ -84,7 +84,11 @@ export default {
   },
   methods: {
     ...mapMutations("channel", ["ADD_CHANNEL", "ADD_MESSAGE"]),
-    ...mapActions("channel", ["postMessage", "getMessages"]),
+    ...mapActions("channel", [
+      "postMessage",
+      "getMessages",
+      "getPaginatedMessages",
+    ]),
     pushMessage() {
       this.postMessage({
         channelId: this.getCurrentChannel._id,
@@ -96,7 +100,7 @@ export default {
     },
     async paginateMessages() {
       this.paginationRequest = true;
-      // Paginate messages!!!
+      await this.getPaginatedMessages(this.getCurrentChannel._id);
       this.paginationRequest = false;
     },
   },

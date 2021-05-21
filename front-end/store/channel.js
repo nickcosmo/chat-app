@@ -23,6 +23,7 @@ export default {
         CLEAR_SEARCH_CHANNELS: (state) => (state.searchChannels = []),
         ADD_PAGE: (state) => state.page++,
         RESET_PAGE: (state) => (state.page = 1),
+        CONCAT_MESSAGES: (state, messages) => state.messages = messages.concat(state.messages),
     },
     actions: {
         //TODO remove this?
@@ -73,10 +74,30 @@ export default {
 
                     commit('UPDATE_MESSAGES', response.data.messages);
                     commit('UPDATE_CURRENT_CHANNEL', response.data.channel);
-                    commit('ADD_PAGE');
                     socket.emit('channel-connect', {
                         channelId: getters.getCurrentChannel._id,
                     });
+                } else {
+                    // TODO throw err
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        // eslint-disable-next-line no-unused-vars
+        async getPaginatedMessages({ getters, commit }, channelId) {
+            commit('ADD_PAGE');
+            try {
+                let page = getters.getPage;
+                page = page.toString();
+
+                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId + '/?page=' + page);
+
+                if (response.status === 200 && response.data.success) {
+                    response.data.messages.forEach((message) => {
+                        message.date = new Date(message.date);
+                    });
+                    commit('CONCAT_MESSAGES', response.data.messages);
                 } else {
                     // TODO throw err
                 }
