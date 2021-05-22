@@ -102,7 +102,7 @@ export default {
         async login({ commit, dispatch }, userData) {
             try {
                 const response = await axios.post(process.env.VUE_APP_API + '/auth/login', userData, { withCredentials: true, credentials: true });
-                if (response.status === 200 && response.success) {
+                if (response.status === 200 && response.data.success) {
                     const user = response.data.user;
                     const returnUser = {
                         name: user.name,
@@ -115,7 +115,7 @@ export default {
                     }
                     return {
                         success: true,
-                        message: response.message,
+                        message: `Welcome back, ${response.data.user.name}!`,
                     };
                 }
             } catch (err) {

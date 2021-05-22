@@ -62,12 +62,12 @@ class User {
                         success: true,
                     };
                 } else {
-                    const err = new Error('Invalid Cridentials!');
+                    const err = new Error('User not found!');
                     err.statusCode = 401;
                     throw err;
                 }
             } else {
-                const err = new Error('Invalid Cridentials!');
+                const err = new Error('User not found!');
                 err.statusCode = 401;
                 throw err;
             }

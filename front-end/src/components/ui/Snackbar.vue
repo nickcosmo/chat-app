@@ -1,9 +1,15 @@
 <template>
-  <v-snackbar top timeout=2500 v-model="status">
+  <v-snackbar
+    :color="snackbarColor"
+    elevation="10"
+    top
+    timeout="2500"
+    v-model="status"
+  >
     {{ message }}
 
     <template v-slot:action="{ attrs }">
-      <v-btn text v-bind="attrs" @click="showSnackbar"> Close </v-btn>
+      <v-btn v-bind="attrs" @click="showSnackbar"> Close </v-btn>
     </template>
   </v-snackbar>
 </template>
@@ -19,6 +25,11 @@ export default {
       status: false,
     };
   },
+  computed: {
+    snackbarColor() {
+      return this.success ? "#66BB6A" : "#EF5350";
+    },
+  },
   methods: {
     showSnackbar() {
       this.status = !this.status;
@@ -26,7 +37,6 @@ export default {
   },
   created() {
     EventBus.$on("showSnackbar", (payload) => {
-      console.log("bus init");
       this.message = payload.message;
       this.success = payload.success;
       this.status = !this.status;
