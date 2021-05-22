@@ -47,6 +47,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { EventBus } from "@/event-bus";
 
 export default {
   data() {
@@ -71,7 +72,9 @@ export default {
       await this.gitHubSigninSuccess(this.$route.query.code);
     },
     async submit() {
-      await this.login(this.user);
+      const response = await this.login(this.user);
+      EventBus.$emit("showSnackbar", response);
+      if (response.success) this.$router.push({ name: "chat" });
     },
   },
   created() {

@@ -102,7 +102,7 @@ export default {
         async login({ commit, dispatch }, userData) {
             try {
                 const response = await axios.post(process.env.VUE_APP_API + '/auth/login', userData, { withCredentials: true, credentials: true });
-                if (response.status === 200) {
+                if (response.status === 200 && response.success) {
                     const user = response.data.user;
                     const returnUser = {
                         name: user.name,
@@ -113,10 +113,16 @@ export default {
                     if (returnUser.channels.length > 0) {
                         await dispatch('channel/getMessages', returnUser.channels[0]._id, { root: true });
                     }
-                    router.push({ name: 'chat' });
+                    return {
+                        success: true,
+                        message: response.message,
+                    };
                 }
             } catch (err) {
-                console.log('login err => ', err.message);
+                return {
+                    success: false,
+                    message: err.response.data.message,
+                };
             }
         },
         // eslint-disable-next-line no-unused-vars
