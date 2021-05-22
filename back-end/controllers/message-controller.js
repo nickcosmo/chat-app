@@ -13,12 +13,11 @@ exports.getMessagesByChannel = async (req, res, next) => {
         let response = await Message.fetchByChannel(channelId, page);
         if (response.success) {
             channel = await Channel.fetchById(channelId);
-        } else {
-            // TODO throw error
-        }
-
-        if (channel.success) {
-            response = { ...response, ...channel };
+            if (channel.success) {
+                response = { ...response, ...channel };
+            } else {
+                // TODO throw error
+            }
         } else {
             // TODO throw error
         }

@@ -9,10 +9,9 @@ exports.postUser = async (req, res, next) => {
 
     // if all data was not supplied then send back an error
     if (!name || !password || !email) {
-        return res.status(400).json({
-            message: 'Invalid request!',
-            success: false,
-        });
+        const err = new Error('Invalid inputs!');
+        err.statusCode = 400;
+        throw err;
     }
 
     // if password is not string then convert to string
@@ -33,11 +32,13 @@ exports.postUser = async (req, res, next) => {
             const token = await jwtUtil.jwtSign(response.user._id);
             return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
         } else {
-            throw new Error(response.message);
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
         }
     } catch (err) {
-        // TODO throw an error
         console.log('postUser err => ', err);
+        next(err);
     }
 };
 
@@ -47,10 +48,9 @@ exports.getUser = async (req, res, next) => {
 
     // if all data was not supplied then send back an error
     if (!password || !email) {
-        return res.status(400).json({
-            message: 'Invalid request!',
-            success: false,
-        });
+        const err = new Error('Invalid inputs!');
+        err.statusCode = 400;
+        throw err;
     }
 
     // if password is not string then convert to string
@@ -69,11 +69,13 @@ exports.getUser = async (req, res, next) => {
             const token = await jwtUtil.jwtSign(response.user._id);
             return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
         } else {
-            throw new Error(response.message);
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
         }
     } catch (err) {
-        // TODO throw an error
         console.log('getUser err => ', err);
+        next(err);
     }
 };
 

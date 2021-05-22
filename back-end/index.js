@@ -30,6 +30,15 @@ app.use(messageRoutes.routes);
 app.use(userRoutes.routes);
 app.use(authRoutes.routes);
 
+// catch all error handler
+app.use((err, req, res, next) => {
+    console.log("err handler -> ", err.message, err.statusCode);
+    res.status(err.statusCode).json({
+        message: err.message,
+        success: false,
+    });
+});
+
 // establish connection
 let server;
 mongoConnect(async () => {

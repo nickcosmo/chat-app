@@ -32,10 +32,13 @@ class User {
                     };
                 }
             } else {
-                throw new Error('User already exists!');
+                const err = new Error('User already exists!');
+                err.statusCode = 401;
+                throw err;
             }
         } catch (err) {
             return {
+                statusCode: err.statusCode,
                 success: false,
                 message: err.message,
             };
@@ -58,12 +61,21 @@ class User {
                         },
                         success: true,
                     };
+                } else {
+                    const err = new Error('Invalid Cridentials!');
+                    err.statusCode = 401;
+                    throw err;
                 }
             } else {
-                throw new Error('User not found!');
+                const err = new Error('Invalid Cridentials!');
+                err.statusCode = 401;
+                throw err;
             }
         } catch (err) {
+            // TODO remove for prod
+            console.log('read err -> ', err);
             return {
+                statusCode: err.statusCode,
                 message: err.message,
                 success: false,
             };
@@ -119,10 +131,12 @@ class User {
                 _id: channelId,
                 name: channelName,
             };
-            const user = await db.collection('users').findOneAndUpdate({ _id: id }, { $addToSet: { channels: addChannel } }, { returnOriginal: false });
+            const user = await db
+                .collection('users')
+                .findOneAndUpdate({ _id: id }, { $addToSet: { channels: addChannel } }, { returnOriginal: false });
             return {
                 channels: user.value.channels,
-                success: true
+                success: true,
             };
         } catch (err) {
             console.log(err);
@@ -148,6 +162,7 @@ class User {
         } catch (err) {
             console.log(err);
             return {
+                message: err.message,
                 success: false,
             };
         }

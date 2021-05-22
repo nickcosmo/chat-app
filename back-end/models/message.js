@@ -40,7 +40,7 @@ class Message {
                 .limit(20)
                 .toArray();
             if (messages) {
-                messages = messages.reverse();
+                messages.reverse();
                 return {
                     messages: messages,
                     success: true,
