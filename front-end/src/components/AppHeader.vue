@@ -22,10 +22,10 @@ export default {
   computed: {
     ...mapGetters("channel", ["getCurrentChannel"]),
     channelName() {
-      if (this.getCurrentChannel.name) {
+      if (this.getCurrentChannel) {
         return this.getCurrentChannel.name;
       } else {
-        return "";
+        return null;
       }
     },
   },

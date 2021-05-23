@@ -2,34 +2,41 @@ const fetch = require('node-fetch');
 const { OAuth2Client } = require('google-auth-library');
 
 exports.gitHubSignin = async (req, res, next) => {
-    const response = await fetch(process.env.GITHUB_ACCESS_URI, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            client_id: process.env.GITHUB_CLIENT_ID,
-            client_secret: process.env.GITHUB_SECRET,
-            code: req.body.code,
-            redirect_uri: process.env.GITHUB_REDIRECT_URI,
-        }),
-    });
-    const responseString = await response.text();
-    const params = new URLSearchParams(responseString);
-    const access_token = params.get('access_token');
-    const userData = await fetch(process.env.GITHUB_USER_URI, {
-        method: 'GET',
-        headers: {
-            Authorization: 'token ' + access_token,
-        },
-    });
-    if (userData.status === 200) {
-        const user = await userData.json();
-        req.body.name = user.name;
-        req.body.email = user.login;
-        next();
-    } else {
-        // TODO return some error
+    try {
+        const response = await fetch(process.env.GITHUB_ACCESS_URI, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                client_id: process.env.GITHUB_CLIENT_ID,
+                client_secret: process.env.GITHUB_SECRET,
+                code: req.body.code,
+                redirect_uri: process.env.GITHUB_REDIRECT_URI,
+            }),
+        });
+        const responseString = await response.text();
+        const params = new URLSearchParams(responseString);
+        const access_token = params.get('access_token');
+        const userData = await fetch(process.env.GITHUB_USER_URI, {
+            method: 'GET',
+            headers: {
+                Authorization: 'token ' + access_token,
+            },
+        });
+        if (userData.status === 200) {
+            const user = await userData.json();
+            req.body.name = user.name;
+            req.body.email = user.login;
+            req.body.method = 'github';
+            next();
+        } else {
+            const err = new Error('Third party sign in error!');
+            throw err;
+        }
+    } catch (err) {
+        console.log('github err -> ', err);
+        next(err);
     }
 };
 
@@ -44,9 +51,10 @@ exports.googleSignin = async (req, res, next) => {
         const payload = ticket.getPayload();
         req.body.name = payload.name;
         req.body.email = payload.email;
+        req.body.method = 'google';
         next();
     } catch (err) {
-        console.log(err);
-        // TODO return some error
+        console.log('google err -> ', err);
+        next(err);
     }
 };

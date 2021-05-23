@@ -6,10 +6,10 @@ const { jwtVerify } = require('../util/auth');
 const router = express.Router();
 
 // /github-auth => POST
-router.post('/github-auth', authController.gitHubSignin, userController.postUserThirdParty);
+router.post('/github-auth', authController.gitHubSignin, userController.userAuthThirdParty);
 
 // /google-auth => POST
-router.post('/google-auth', authController.googleSignin, userController.postUserThirdParty);
+router.post('/google-auth', authController.googleSignin, userController.userAuthThirdParty);
 
 // /auth/signup => POST
 router.post('/auth/signup', userController.postUser);

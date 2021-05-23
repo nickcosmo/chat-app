@@ -1,7 +1,7 @@
 export default {
     filters: {
         capitalize: function(value) {
-            return value.toUpperCase();
+            if (value) value.toUpperCase();
         },
         abbreviation: function(value) {
             const nameArr = value.split(' ');

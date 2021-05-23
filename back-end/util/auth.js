@@ -25,10 +25,12 @@ exports.jwtVerify = async (req, res, next) => {
             req.body._id = verifiedPayload.data;
             next();
         } catch (err) {
-            // TODO return err
-            console.log("jwt err => ", err.message);
+            console.log('jwt err => ', err.message);
+            next(err);
         }
     } else {
-        // TODO return err
+        const err = new Error('Could not authorize this request!');
+        err.statusCode = 401;
+        next(err);
     }
 };

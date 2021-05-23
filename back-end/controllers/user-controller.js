@@ -4,8 +4,9 @@ const jwtUtil = require('../util/auth');
 
 exports.postUser = async (req, res, next) => {
     const name = req.body.name;
+    const method = 'standard';
     let password = req.body.password;
-    const email = req.body.email;
+    let email = req.body.email;
 
     // if all data was not supplied then send back an error
     if (!name || !password || !email) {
@@ -24,7 +25,7 @@ exports.postUser = async (req, res, next) => {
         email = email.toString();
     }
 
-    const newUser = new User(name, password, email, []);
+    const newUser = new User(name, password, email, [], method);
 
     try {
         const response = await newUser.create();
@@ -43,8 +44,9 @@ exports.postUser = async (req, res, next) => {
 };
 
 exports.getUser = async (req, res, next) => {
-    const password = req.body.password;
-    const email = req.body.email;
+    let password = req.body.password;
+    let email = req.body.email;
+    const method = 'standard';
 
     // if all data was not supplied then send back an error
     if (!password || !email) {
@@ -64,7 +66,7 @@ exports.getUser = async (req, res, next) => {
     }
 
     try {
-        const response = await User.read(email, password);
+        const response = await User.read(email, password, method);
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
             return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
@@ -79,23 +81,26 @@ exports.getUser = async (req, res, next) => {
     }
 };
 
-exports.postUserThirdParty = async (req, res, next) => {
+exports.userAuthThirdParty = async (req, res, next) => {
     const name = req.body.name;
     const email = req.body.email;
+    const method = req.body.method;
 
-    const newUser = new User(name, null, email, []);
+    const newUser = new User(name, null, email, [], method);
 
     try {
-        const response = await newUser.createThirdParty();
+        const response = await newUser.authThirdParty();
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
             return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
         } else {
-            throw new Error(response.message);
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
         }
     } catch (err) {
-        // TODO throw an error
-        console.log(err);
+        console.log('userAuthThirdParty err -> ', err);
+        next(err);
     }
 };
 

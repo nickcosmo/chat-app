@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { router } from '../routes/router';
+import { EventBus } from '@/event-bus';
 
 export default {
     namespaced: true,
@@ -33,22 +34,37 @@ export default {
                             process.env.VUE_APP_API + '/google-auth',
                             {
                                 token: googleUser.getAuthResponse().id_token,
-                                method: 'google',
+                                // method: 'google',
                             },
                             { withCredentials: true, credentials: true }
                         );
-                        const user = response.data.user;
-                        const returnUser = {
-                            name: user.name,
-                            _id: user._id,
-                            channels: user.channels,
-                        };
-                        commit('UPDATE_USER', returnUser);
-                        router.push({ name: 'chat' });
+                        if (response.status === 200 && response.data.success) {
+                            const user = response.data.user;
+                            const returnUser = {
+                                name: user.name,
+                                _id: user._id,
+                                channels: user.channels,
+                            };
+                            commit('UPDATE_USER', returnUser);
+                            EventBus.$emit('showSnackbar', {
+                                success: true,
+                                message: `Welcome, ${response.data.user.name}!`,
+                            });
+                            router.push({ name: 'chat' });
+                        } else {
+                            EventBus.$emit('showSnackbar', {
+                                success: false,
+                                message: response.data.message,
+                            });
+                        }
                     },
                     // failure case
                     function(error) {
                         console.log(error);
+                        EventBus.$emit('showSnackbar', {
+                            success: false,
+                            message: error.message,
+                        });
                     }
                 );
             });
@@ -74,8 +90,16 @@ export default {
                     channels: user.channels,
                 };
                 commit('UPDATE_USER', returnUser);
+                return {
+                    success: true,
+                    message: `Welcome, ${response.data.user.name}!`,
+                };
             } catch (err) {
                 console.log(err);
+                return {
+                    success: false,
+                    message: err.response.data.message,
+                };
             }
         },
         // eslint-disable-next-line no-unused-vars
@@ -85,7 +109,7 @@ export default {
                     withCredentials: true,
                     credentials: true,
                 });
-                if (response.status === 200 && response.success) {
+                if (response.status === 200 && response.data.success) {
                     const user = response.data.user;
                     const returnUser = {
                         name: user.name,
@@ -93,9 +117,16 @@ export default {
                         channels: user.channels,
                     };
                     commit('UPDATE_USER', returnUser);
+                    return {
+                        success: true,
+                        message: `Welcome to the chat app, ${response.data.user.name}!`,
+                    };
                 }
             } catch (err) {
-                console.log(err);
+                return {
+                    success: false,
+                    message: err.response.data.message,
+                };
             }
         },
         // eslint-disable-next-line no-unused-vars

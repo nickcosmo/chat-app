@@ -3,11 +3,12 @@ const bcrypt = require('bcrypt');
 const mongodb = require('mongodb');
 
 class User {
-    constructor(name, password, email, channels, id) {
+    constructor(name, password, email, channels, method, id) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.channels = channels;
+        this.method = method;
         this._id = id;
     }
 
@@ -15,7 +16,8 @@ class User {
     async create() {
         try {
             const db = getDb();
-            const checkUser = await db.collection('users').findOne({ email: this.email });
+            // TODO add sign in when reading users
+            const checkUser = await db.collection('users').findOne({ $and: [{ email: this.email }, { method: this.method }] });
             if (!checkUser) {
                 let hashedPassword = await bcrypt.hash(this.password, 12);
                 this.password = hashedPassword;
@@ -38,17 +40,17 @@ class User {
             }
         } catch (err) {
             return {
-                statusCode: err.statusCode,
+                statusCode: err.statusCode ? err.statusCode : 500,
                 success: false,
                 message: err.message,
             };
         }
     }
 
-    static async read(email, password) {
+    static async read(email, password, method) {
         try {
             const db = getDb();
-            const user = await db.collection('users').findOne({ email: email });
+            const user = await db.collection('users').findOne({ $and: [{ email: email }, { method: method }] });
             if (user) {
                 const match = await bcrypt.compare(password, user.password);
                 const { _id, name, channels } = user;
@@ -75,19 +77,19 @@ class User {
             // TODO remove for prod
             console.log('read err -> ', err);
             return {
-                statusCode: err.statusCode,
+                statusCode: err.statusCode ? err.statusCode : 500,
                 message: err.message,
                 success: false,
             };
         }
     }
 
-    async createThirdParty() {
+    async authThirdParty() {
         try {
             const db = getDb();
 
             // check if user exists
-            const checkUser = await db.collection('users').findOne({ email: this.email });
+            const checkUser = await db.collection('users').findOne({ $and: [{ email: this.email }, { method: this.method }] });
             if (!checkUser) {
                 // if no user found then create new user
                 const user = await db.collection('users').insertOne(this);
@@ -104,7 +106,7 @@ class User {
                 }
             } else {
                 // if user found then sign the user in
-                const { _id, name, channels } = checkUser.user;
+                const { _id, name, channels } = checkUser;
                 return {
                     user: {
                         _id: _id,
@@ -115,8 +117,9 @@ class User {
                 };
             }
         } catch (err) {
-            console.log(err);
+            console.log('third party auth err -> ', err);
             return {
+                statusCode: err.statusCode ? err.statusCode : 500,
                 message: err.message,
                 success: false,
             };
@@ -147,7 +150,7 @@ class User {
         }
     }
 
-    // TODO review if this is necessary!
+    // TODO review if this is necessary! -> add method!
     static async readThirdParty(email) {
         try {
             const db = getDb();

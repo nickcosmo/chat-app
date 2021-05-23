@@ -62,14 +62,16 @@ export default {
     ...mapActions("user", ["googleSignin", "gitHubSigninSuccess", "login"]),
     async initGoogleSignIn() {
       const elementRef = document.getElementById("google_btn");
-      this.googleSignin(elementRef);
+      await this.googleSignin(elementRef);
     },
     // eslint-disable-next-line no-unused-vars
     gitHubSignin() {
       window.location.href = process.env.VUE_APP_GITHUB_URI;
     },
     async gitHubSuccess() {
-      await this.gitHubSigninSuccess(this.$route.query.code);
+      const response = await this.gitHubSigninSuccess(this.$route.query.code);
+      EventBus.$emit("showSnackbar", response);
+      if (response.success) this.$router.push({ name: "chat" });
     },
     async submit() {
       const response = await this.login(this.user);

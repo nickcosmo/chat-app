@@ -62,6 +62,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { EventBus } from "@/event-bus";
 
 export default {
   data() {
@@ -84,10 +85,14 @@ export default {
       window.location.href = process.env.VUE_APP_GITHUB_URI;
     },
     async gitHubSuccess() {
-      await this.gitHubSigninSuccess(this.$route.query.code);
+      const response = await this.gitHubSigninSuccess(this.$route.query.code);
+      EventBus.$emit("showSnackbar", response);
+      if (response.success) this.$router.push({ name: "chat" });
     },
     async submit() {
-      await this.signup(this.user);
+      const response = await this.signup(this.user);
+      EventBus.$emit("showSnackbar", response);
+      if (response.success) this.$router.push({ name: "chat" });
     },
   },
   created() {
