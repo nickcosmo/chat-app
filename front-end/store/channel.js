@@ -23,7 +23,7 @@ export default {
         CLEAR_SEARCH_CHANNELS: (state) => (state.searchChannels = []),
         ADD_PAGE: (state) => state.page++,
         RESET_PAGE: (state) => (state.page = 1),
-        CONCAT_MESSAGES: (state, messages) => state.messages = messages.concat(state.messages),
+        CONCAT_MESSAGES: (state, messages) => (state.messages = messages.concat(state.messages)),
     },
     actions: {
         //TODO remove this?
@@ -56,6 +56,7 @@ export default {
         },
         // eslint-disable-next-line no-unused-vars
         async getMessages({ getters, commit }, channelId) {
+            commit('RESET_PAGE');
             try {
                 if (getters.getCurrentChannel) {
                     socket.emit('channel-leave', {
