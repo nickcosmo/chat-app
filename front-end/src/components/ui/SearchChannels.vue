@@ -47,6 +47,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import utilMixin from "@/mixins/util";
+import { EventBus } from "@/event-bus";
 
 export default {
   mixins: [utilMixin],
@@ -64,22 +65,25 @@ export default {
   },
   computed: {
     ...mapGetters("channel", ["getSearchChannels"]),
+    ...mapGetters("user", ["getUser"]),
   },
   methods: {
     ...mapActions("channel", ["searchChannels"]),
+    ...mapActions("user", ["addChannel"]),
     async pushSearchChannels() {
       await this.searchChannels({ string: this.searchString });
     },
     async pushAddChannel(channelId, channelName) {
       const userName = this.getUser.name;
       const userId = this.getUser._id;
-      const data = {
+      const payload = {
         userName: userName,
         userId: userId,
         channelName: channelName,
         channelId: channelId,
       };
-      await this.addChannel(data);
+      const response = await this.addChannel(payload);
+      EventBus.$emit("showSnackbar", response);
       this.searchString = null;
     },
   },

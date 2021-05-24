@@ -18,7 +18,7 @@ export default {
     },
     actions: {
         // eslint-disable-next-line no-unused-vars
-        async googleSignin({ commit }, elementRef) {
+        async googleSignin({ dispatch, commit }, elementRef) {
             const gapi = window.gapi;
             await gapi.load('auth2', () => {
                 const auth2 = gapi.auth2.init({
@@ -45,6 +45,9 @@ export default {
                                 _id: user._id,
                                 channels: user.channels,
                             };
+                            if (user.channels.length > 0) {
+                                await dispatch('channel/getMessages', user.channels[0]._id, { root: true });
+                            }
                             commit('UPDATE_USER', returnUser);
                             EventBus.$emit('showSnackbar', {
                                 success: true,
@@ -70,7 +73,7 @@ export default {
             });
         },
         // eslint-disable-next-line no-unused-vars
-        async gitHubSigninSuccess({ commit }, code) {
+        async gitHubSigninSuccess({ dispatch, commit }, code) {
             try {
                 const response = await axios.post(
                     process.env.VUE_APP_API + '/github-auth',
@@ -89,6 +92,9 @@ export default {
                     _id: user._id,
                     channels: user.channels,
                 };
+                if (user.channels.length > 0) {
+                    await dispatch('channel/getMessages', user.channels[0]._id, { root: true });
+                }
                 commit('UPDATE_USER', returnUser);
                 return {
                     success: true,
@@ -166,9 +172,16 @@ export default {
                     commit('UPDATE_USER_CHANNELS', channels);
                     await dispatch('channel/getMessages', channel._id, { root: true });
                     // commit('UPDATE_CURRENT_CHANNEL', channel);
+                    return {
+                        success: response.data.success,
+                        message: 'Channel was added successfully!',
+                    };
                 }
             } catch (err) {
-                console.log(err);
+                return {
+                    success: false,
+                    message: err.response.data.message,
+                };
             }
         },
         // TODO auto login

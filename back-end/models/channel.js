@@ -16,19 +16,24 @@ class Channel {
             const channel = await db.collection('channels').insertOne(this);
             if (channel) {
                 return {
-                    channel: channel.ops,
+                    channel: channel.ops[0],
                     success: true,
                 };
+            } else {
+                const err = new Error('Could not create channel!');
+                throw err;
             }
         } catch (err) {
             console.log(err);
             return {
+                statusCode: err.statusCode ? err.statusCode : 500,
                 message: err.message,
                 success: false,
             };
         }
     }
 
+    // TODO review if needed
     static async fetchAll() {
         try {
             const db = getDb();
@@ -80,10 +85,15 @@ class Channel {
                     channels: channels,
                     success: true,
                 };
+            } else {
+                const err = new Error('Could not complete this request!');
+                err.statusCode = 404;
+                throw err;
             }
         } catch (err) {
             console.log(err);
             return {
+                statusCode: err.statusCode ? err.statusCode : 500,
                 message: err.message,
                 success: false,
             };
@@ -101,12 +111,20 @@ class Channel {
             const channel = await db
                 .collection('channels')
                 .findOneAndUpdate({ _id: id }, { $addToSet: { members: addUser } }, { returnOriginal: false });
-            return {
-                channel: channel.value,
-            };
+            if (channel) {
+                return {
+                    channel: channel.value,
+                    success: true,
+                };
+            } else {
+                const err = new Error('Could not complete this request!');
+                err.statusCode = 404;
+                throw err;
+            }
         } catch (err) {
             console.log(err);
             return {
+                statusCode: err.statusCode,
                 message: err.message,
                 success: false,
             };

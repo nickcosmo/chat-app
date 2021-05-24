@@ -6,21 +6,32 @@ exports.postAddChannel = async (req, res, next) => {
     const name = req.body.name;
     const description = req.body.description;
     const userId = req.body.userId;
-    const userName = req.body.userName;
-    const members = [{ userName: req.body.userName, userId: req.body.userId }];
+    const members = [{ name: req.body.userName, _id: req.body.userId }];
 
     const newChannel = new Channel(name, description, userId, members);
     try {
         const response = await newChannel.create();
         if (response.success) {
-            await User.addChannel(userId, response.channel[0]._id, response.channel[0].name);
-            return res.json(response);
+            const userResponse = await User.addChannel(userId, response.channel._id, response.channel.name);
+            if (userResponse.success) {
+                return res.status(200).json(response);
+            } else {
+                const err = new Error(response.message);
+                err.statusCode = response.statusCode;
+                throw err;
+            }
+        } else {
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
         }
     } catch (err) {
         console.log(err);
+        next(err);
     }
 };
 
+// TODO remove?
 exports.getChannels = async (req, res, next) => {
     try {
         const response = await Channel.fetchAll();
@@ -30,6 +41,7 @@ exports.getChannels = async (req, res, next) => {
     }
 };
 
+// TODO remove?
 exports.getChannelById = async (req, res, next) => {
     const id = req.params.id;
     const docId = new mongodb.ObjectID(id);
@@ -48,9 +60,12 @@ exports.searchChannels = async (req, res, next) => {
         if (response.success) {
             return res.status(200).json(response);
         } else {
-            throw new Error(response.message);
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
         }
     } catch (err) {
         console.log(err);
+        next(err);
     }
 };

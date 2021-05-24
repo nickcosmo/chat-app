@@ -1,7 +1,6 @@
 const Message = require('../models/message');
 const Channel = require('../models/channel');
 const io = require('../socket.js');
-const mongodb = require('mongodb');
 
 exports.getMessagesByChannel = async (req, res, next) => {
     const channelId = req.params.id;
@@ -11,20 +10,23 @@ exports.getMessagesByChannel = async (req, res, next) => {
     try {
         let channel;
         let response = await Message.fetchByChannel(channelId, page);
-        if (response.success) {
-            channel = await Channel.fetchById(channelId);
-            if (channel.success) {
-                response = { ...response, ...channel };
-            } else {
-                // TODO throw error
-            }
-        } else {
-            // TODO throw error
+        if (!response.success) {
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
         }
 
+        channel = await Channel.fetchById(channelId);
+        if (!channel.success) {
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
+        }
+        response = { ...response, ...channel };
         res.status(200).json(response);
     } catch (err) {
         console.log(err);
+        next(err);
     }
 };
 
@@ -39,11 +41,17 @@ exports.postMessage = async (req, res, next) => {
 
     try {
         const response = await newMessage.create();
+        if (!response.success) {
+            const err = new Error(response.message);
+            err.statusCode = response.statusCode;
+            throw err;
+        }
         io.getIO()
             .to(channelId)
             .emit('newMessage', { ...response });
-        res.json(response);
+        res.status(200).json(response);
     } catch (err) {
         console.log(err);
+        next(err);
     }
 };

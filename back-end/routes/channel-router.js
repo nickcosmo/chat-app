@@ -6,6 +6,7 @@ const router = express.Router();
 // /channel => POST
 router.post('/channel', channelController.postAddChannel);
 
+// TODO remove?
 // /channel => GET
 router.get('/channel', channelController.getChannels);
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import socket from '@/socket';
+import { EventBus } from '@/event-bus';
 
 export default {
     namespaced: true,
@@ -40,9 +41,25 @@ export default {
         async create({ commit }, channelData) {
             try {
                 const newChannel = await axios.post(process.env.VUE_APP_API + '/channel', channelData);
-                commit('user/PUSH_USER_CHANNEL', newChannel.data.channel[0], { root: true });
+                if (newChannel.status === 200 && newChannel.data.success) {
+                    console.log('newChannel -> ', newChannel);
+                    commit('user/PUSH_USER_CHANNEL', newChannel.data.channel, { root: true });
+                    return {
+                        success: true,
+                        message: `The channel, ${newChannel.data.channel.name} was created!`,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: 'Error creating channel!',
+                    };
+                }
             } catch (err) {
                 console.log(err);
+                return {
+                    success: false,
+                    message: `Error creating channel. ${err.message}`,
+                };
             }
         },
         // eslint-disable-next-line no-unused-vars
@@ -52,6 +69,10 @@ export default {
                 const newMessage = await axios.post(process.env.VUE_APP_API + '/message', messageData);
             } catch (err) {
                 console.log(err);
+                EventBus.$emit('showSnackbar', {
+                    success: false,
+                    message: `Error posting message. ${err.message}`,
+                });
             }
         },
         // eslint-disable-next-line no-unused-vars
@@ -78,11 +99,13 @@ export default {
                     socket.emit('channel-connect', {
                         channelId: getters.getCurrentChannel._id,
                     });
-                } else {
-                    // TODO throw err
                 }
             } catch (err) {
                 console.log(err);
+                EventBus.$emit('showSnackbar', {
+                    success: false,
+                    message: `Error fetching messages. ${err.message}`,
+                });
             }
         },
         // eslint-disable-next-line no-unused-vars
@@ -99,11 +122,13 @@ export default {
                         message.date = new Date(message.date);
                     });
                     commit('CONCAT_MESSAGES', response.data.messages);
-                } else {
-                    // TODO throw err
                 }
             } catch (err) {
                 console.log(err);
+                EventBus.$emit('showSnackbar', {
+                    success: false,
+                    message: `Error fetching messages. ${err.message}`,
+                });
             }
         },
         // eslint-disable-next-line no-unused-vars
@@ -117,6 +142,10 @@ export default {
                 }
             } catch (err) {
                 console.log('search channels err => ', err);
+                EventBus.$emit('showSnackbar', {
+                    success: false,
+                    message: err.message,
+                });
             }
         },
     },

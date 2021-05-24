@@ -86,10 +86,12 @@ export default {
     async postChannel(channel) {
       const payload = {
         userId: this.getUserId,
+        userName: this.getUser.name,
         description: channel[1],
         name: channel[0],
       };
-      await this.create(payload);
+      const response = await this.create(payload);
+      EventBus.$emit("showSnackbar", response);
       this.dialog = false;
     },
     async selectChannel(id) {

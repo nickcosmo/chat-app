@@ -116,7 +116,7 @@ exports.getUserThirdParty = async (req, res, next) => {
     }
 };
 
-exports.postAddChannel = async (req, res, next) => {
+exports.postAddChannelToUser = async (req, res, next) => {
     const channelId = req.body.channelId;
     const channelName = req.body.channelName;
     const userId = req.body.userId;
@@ -124,11 +124,22 @@ exports.postAddChannel = async (req, res, next) => {
 
     try {
         const userChannels = await User.addChannel(userId, channelId, channelName);
+        if (!userChannels.success) {
+            const err = new Error(userChannels.message);
+            err.statusCode = userChannels.statusCode ? userChannels.statusCode : 500;
+            throw err;
+        }
         const updatedChannel = await Channel.addMember(channelId, userId, userName);
+        if (!updatedChannel.success) {
+            const err = new Error(updatedChannel.message);
+            err.statusCode = updatedChannel.statusCode ? updatedChannel.statusCode : 500;
+            throw err;
+        }
         const response = { ...userChannels, ...updatedChannel };
         return res.status(200).json(response);
     } catch (err) {
         console.log(err);
+        next(err);
     }
 };
 

@@ -24,7 +24,9 @@ class Message {
             }
         } catch (err) {
             return {
+                statusCode: err.statusCode ? err.statusCode : 500,
                 success: false,
+                message: err.message,
             };
         }
     }
@@ -48,7 +50,9 @@ class Message {
             }
         } catch (err) {
             return {
+                statusCode: err.statusCode ? err.statusCode : 500,
                 success: false,
+                message: err.message,
             };
         }
     }

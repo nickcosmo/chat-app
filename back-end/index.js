@@ -32,7 +32,8 @@ app.use(authRoutes.routes);
 
 // catch all error handler
 app.use((err, req, res, next) => {
-    console.log("err handler -> ", err.message, err.statusCode);
+    err.statusCode = err.statusCode ? err.statusCode : 500;
+    console.log('err handler -> ', err.message, err.statusCode);
     res.status(err.statusCode).json({
         message: err.message,
         success: false,

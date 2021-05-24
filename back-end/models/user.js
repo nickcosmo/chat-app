@@ -137,13 +137,20 @@ class User {
             const user = await db
                 .collection('users')
                 .findOneAndUpdate({ _id: id }, { $addToSet: { channels: addChannel } }, { returnOriginal: false });
-            return {
-                channels: user.value.channels,
-                success: true,
-            };
+            if (user) {
+                return {
+                    channels: user.value.channels,
+                    success: true,
+                };
+            } else {
+                const err = new Error('Could not find a user!');
+                err.statusCode = 404;
+                throw err;
+            }
         } catch (err) {
             console.log(err);
             return {
+                statusCode: err.statusCode ? err.statusCode : 500,
                 message: err.message,
                 success: false,
             };
