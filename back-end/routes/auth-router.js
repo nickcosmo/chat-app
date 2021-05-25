@@ -1,7 +1,7 @@
 const express = require('express');
 const authController = require('../controllers/auth-controller');
 const userController = require('../controllers/user-controller');
-const { jwtVerify } = require('../util/auth');
+const { body } = require('express-validator');
 
 const router = express.Router();
 
@@ -12,10 +12,16 @@ router.post('/github-auth', authController.gitHubSignin, userController.userAuth
 router.post('/google-auth', authController.googleSignin, userController.userAuthThirdParty);
 
 // /auth/signup => POST
-router.post('/auth/signup', userController.postUser);
+router.post(
+    '/auth/signup',
+    body('name').trim().notEmpty().isString(),
+    body('email').trim().notEmpty().isString(),
+    body('password').trim().notEmpty().isString(),
+    userController.postUser
+);
 
 // /auth/login => POST
-router.post('/auth/login', userController.getUser);
+router.post('/auth/login', body('email').trim().notEmpty().isString(), body('password').trim().notEmpty().isString(), userController.getUser);
 
 // TODO auto login - review if needed
 // /auth/login => POST

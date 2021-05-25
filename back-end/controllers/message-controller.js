@@ -1,13 +1,21 @@
 const Message = require('../models/message');
 const Channel = require('../models/channel');
 const io = require('../socket.js');
+const { validationResult } = require('express-validator');
 
 exports.getMessagesByChannel = async (req, res, next) => {
-    const channelId = req.params.id;
-    let page = req.query.page;
-    page = parseInt(page);
-
     try {
+        const check = validationResult(req);
+        if (!check.isEmpty()) {
+            const err = new Error(check.errors[0].msg);
+            err.statusCode = 422;
+            throw err;
+        }
+
+        const channelId = req.params.id;
+        let page = req.query.page;
+        page = parseInt(page);
+
         let channel;
         let response = await Message.fetchByChannel(channelId, page);
         if (!response.success) {
@@ -31,15 +39,22 @@ exports.getMessagesByChannel = async (req, res, next) => {
 };
 
 exports.postMessage = async (req, res, next) => {
-    const userId = req.body.userId;
-    const userName = req.body.userName;
-    const channelId = req.body.channelId;
-    const body = req.body.body;
-    const date = req.body.date;
-
-    const newMessage = new Message(userId, userName, channelId, body, date);
-
     try {
+        const check = validationResult(req);
+        if (!check.isEmpty()) {
+            const err = new Error(check.errors[0].msg);
+            err.statusCode = 422;
+            throw err;
+        }
+
+        const userId = req.body.userId;
+        const userName = req.body.userName;
+        const channelId = req.body.channelId;
+        const body = req.body.body;
+        const date = req.body.date;
+
+        const newMessage = new Message(userId, userName, channelId, body, date);
+
         const response = await newMessage.create();
         if (!response.success) {
             const err = new Error(response.message);
