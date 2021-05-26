@@ -1,16 +1,21 @@
 <template>
   <div>
-    <v-text-field
-      label="Search"
-      v-model="searchString"
-      outlined
-      clearable
-      class="mx-3 mt-3"
-      prepend-inner-icon="mdi-magnify"
-      dense
-      @click:prepend-inner="pushSearchChannels"
-    >
-    </v-text-field>
+    <validation-observer ref="searchObserver">
+      <validation-provider v-slot="{ errors }" rules="required">
+        <v-text-field
+          :error-messages="errors"
+          label="Search"
+          v-model="searchString"
+          outlined
+          clearable
+          class="mx-3 mt-3"
+          prepend-inner-icon="mdi-magnify"
+          dense
+          @click:prepend-inner="pushSearchChannels"
+        >
+        </v-text-field>
+      </validation-provider>
+    </validation-observer>
 
     <v-list v-if="getSearchChannels.length > 0">
       <v-list-item-title class="pl-4"> Search Results </v-list-item-title>
@@ -48,9 +53,15 @@
 import { mapActions, mapGetters } from "vuex";
 import utilMixin from "@/mixins/util";
 import { EventBus } from "@/event-bus";
+import { ValidationProvider, ValidationObserver } from "vee-validate";
 
 export default {
+  props: ["status"],
   mixins: [utilMixin],
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data() {
     return {
       searchString: null,
@@ -60,6 +71,12 @@ export default {
     searchString: function (newString) {
       if (newString == "" || newString == null) {
         this.$store.commit("channel/CLEAR_SEARCH_CHANNELS");
+        this.resetForm();
+      }
+    },
+    status: function (newString) {
+      if (!newString) {
+        this.resetForm();
       }
     },
   },
@@ -71,7 +88,9 @@ export default {
     ...mapActions("channel", ["searchChannels"]),
     ...mapActions("user", ["addChannel"]),
     async pushSearchChannels() {
-      await this.searchChannels({ string: this.searchString });
+      if (await this.$refs.searchObserver.validate()) {
+        await this.searchChannels({ string: this.searchString });
+      }
     },
     async pushAddChannel(channelId, channelName) {
       const userName = this.getUser.name;
@@ -85,6 +104,9 @@ export default {
       const response = await this.addChannel(payload);
       EventBus.$emit("showSnackbar", response);
       this.searchString = null;
+    },
+    async resetForm() {
+      await this.$refs.searchObserver.reset();
     },
   },
 };

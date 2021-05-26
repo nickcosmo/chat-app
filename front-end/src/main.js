@@ -3,15 +3,28 @@ import App from './App.vue';
 import vuetify from './plugins/vuetify';
 import { router } from '../routes/router';
 import store from '../store/store';
-// import VueSocketIO from 'vue-socket.io';
 
+// validation rules
+import { extend } from 'vee-validate';
+import { required, email, min } from 'vee-validate/dist/rules';
+
+extend('required', {
+    ...required,
+    message: 'This field is required',
+});
+
+extend('email', {
+    ...email,
+    message: 'Please enter a valid email address',
+});
+
+extend('min', {
+    ...min,
+    message: `Must be {length} characters long`,
+});
+
+// Vue config
 Vue.config.productionTip = false;
-
-// Vue.use(new VueSocketIO({
-//   debug: true,
-//   connection: 'http://localhost:3000',
-//   // options: {path: ""}
-// }))
 
 new Vue({
     vuetify,

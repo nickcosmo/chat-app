@@ -1,26 +1,50 @@
 <template>
-  <v-card class="pa-4" dark>
-    <v-card-title>NEW CHANNEL</v-card-title>
-    <v-text-field
-      class="px-4"
-      outlined
-      placeholder="Channel Name"
-      v-model="newChannelName"
-    ></v-text-field>
-    <v-textarea
-      class="px-4"
-      outlined
-      placeholder="Channel Description"
-      v-model="newChannelDesc"
-    ></v-textarea>
-    <div class="px-4">
-      <v-btn class="blue" @click="postChannel">Save</v-btn>
-    </div>
-  </v-card>
+  <validation-observer ref="channelObserver">
+    <v-form>
+      <v-card class="pa-4" dark>
+        <v-card-title>NEW CHANNEL</v-card-title>
+        <validation-provider v-slot="{ errors }" rules="required">
+          <v-text-field
+            :error-messages="errors"
+            class="px-4"
+            outlined
+            placeholder="Channel Name"
+            v-model="newChannelName"
+          ></v-text-field>
+        </validation-provider>
+        <validation-provider v-slot="{ errors }" rules="required">
+          <v-textarea
+            :error-messages="errors"
+            class="px-4"
+            outlined
+            placeholder="Channel Description"
+            v-model="newChannelDesc"
+          ></v-textarea>
+        </validation-provider>
+        <div class="px-4">
+          <v-btn class="blue" @click="postChannel">Save</v-btn>
+        </div>
+      </v-card>
+    </v-form>
+  </validation-observer>
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver } from "vee-validate";
+
 export default {
+  props: ["status"],
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+  watch: {
+    status: function (newString) {
+      if (!newString) {
+        this.$refs.channelObserver.reset();
+      }
+    },
+  },
   data() {
     return {
       newChannelName: null,
@@ -29,7 +53,9 @@ export default {
   },
   methods: {
     postChannel() {
-      this.$emit("postChannel", [this.newChannelName, this.newChannelDesc]);
+      if (this.$refs.channelObserver.validate()) {
+        this.$emit("postChannel", [this.newChannelName, this.newChannelDesc]);
+      }
     },
   },
 };

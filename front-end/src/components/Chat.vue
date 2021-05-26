@@ -42,23 +42,28 @@
         </v-list>
       </v-col>
     </v-row>
-    <v-footer class="grey darken-3 px-15 pb-15" app inset height="82">
-      <v-text-field
-        background-color="grey darken-1"
-        class="grey--text text--lighten-1"
-        flat
-        hide-details
-        solo
-        placeholder="type message"
-        v-model="textInput"
-      >
-        <template v-slot:append>
-          <v-btn class="ml-3 blue" @click="pushMessage">
-            <v-icon color="white">mdi-send</v-icon>
-          </v-btn>
-        </template>
-      </v-text-field>
-    </v-footer>
+    <validation-observer ref="chatObserver">
+      <validation-provider v-slot="{ errors }" rules="required">
+        <v-footer class="grey darken-3 px-15 pb-15" app inset height="82">
+          <v-text-field
+            :error-messages="errors"
+            background-color="grey darken-1"
+            class="grey--text text--lighten-1"
+            flat
+            solo
+            placeholder="type message"
+            v-model="textInput"
+            clearable
+          >
+            <template v-slot:append>
+              <v-btn class="ml-3 blue" @click="pushMessage">
+                <v-icon color="white">mdi-send</v-icon>
+              </v-btn>
+            </template>
+          </v-text-field>
+        </v-footer>
+      </validation-provider>
+    </validation-observer>
   </v-container>
 </template>
 
@@ -66,9 +71,14 @@
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import utilMixin from "@/mixins/util";
 import socket from "@/socket";
+import { ValidationProvider, ValidationObserver } from "vee-validate";
 
 export default {
   mixins: [utilMixin],
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data() {
     return {
       textInput: null,
@@ -84,19 +94,17 @@ export default {
   },
   methods: {
     ...mapMutations("channel", ["ADD_CHANNEL", "ADD_MESSAGE"]),
-    ...mapActions("channel", [
-      "postMessage",
-      "getMessages",
-      "getPaginatedMessages",
-    ]),
-    pushMessage() {
-      this.postMessage({
-        channelId: this.getCurrentChannel._id,
-        body: this.textInput,
-        userId: this.getUser._id,
-        userName: this.getUser.name,
-        date: new Date(),
-      });
+    ...mapActions("channel", ["postMessage", "getPaginatedMessages"]),
+    async pushMessage() {
+      if (await this.$refs.chatObserver.validate()) {
+        this.postMessage({
+          channelId: this.getCurrentChannel._id,
+          body: this.textInput,
+          userId: this.getUser._id,
+          userName: this.getUser.name,
+          date: new Date(),
+        });
+      }
     },
     async paginateMessages() {
       this.paginationRequest = true;

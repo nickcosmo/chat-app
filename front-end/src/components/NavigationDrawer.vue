@@ -13,12 +13,12 @@
               </v-btn>
             </template>
 
-            <ChannelModal @postChannel="postChannel" />
+            <ChannelModal @postChannel="postChannel" :status="dialog" />
           </v-dialog>
         </v-app-bar>
 
         <div>
-          <SearchChannels />
+          <SearchChannels :status="mainDrawer" />
         </div>
 
         <v-list v-if="getSearchChannels.length === 0">
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     // TODO remove read ref?
-    ...mapActions("channel", ["read", "create", "getMessages"]),
+    ...mapActions("channel", ["create", "getMessages"]),
     ...mapActions("user", ["addChannel"]),
     async postChannel(channel) {
       const payload = {

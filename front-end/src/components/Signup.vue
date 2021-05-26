@@ -3,57 +3,73 @@
     <v-container>
       <v-row class="justify-center">
         <v-col class="col-12 col-md-5">
-          <v-card outlined dark class="pa-10 mx-auto" max-width="400">
-            <v-card-title>Sign Up Here!</v-card-title>
-            <v-card-text>
-              <v-text-field
-                dense
-                dark
-                prepend-inner-icon="mdi-account-cowboy-hat"
-                outlined
-                label="name"
-                v-model="user.name"
-              ></v-text-field>
-              <v-text-field
-                dense
-                dark
-                prepend-inner-icon="mdi-email"
-                outlined
-                label="email"
-                v-model="user.email"
-              ></v-text-field>
-              <v-text-field
-                dense
-                dark
-                prepend-inner-icon="mdi-lock"
-                outlined
-                label="Password"
-                v-model="user.password"
-              ></v-text-field>
-              <v-btn text class="col-12 blue" @click="submit">Submit</v-btn>
-            </v-card-text>
-            <v-card-text class="text-center">
-              or continue with a social profile
-            </v-card-text>
-            <v-card-text class="d-flex justify-space-around col-7 mx-auto">
-              <v-btn
-                icon
-                large
-                outlined
-                id="google_btn"
-                @click="initGoogleSignIn"
-              >
-                <v-icon>mdi-google</v-icon>
-              </v-btn>
-              <v-btn icon large outlined @click="gitHubSignin">
-                <v-icon>mdi-github</v-icon>
-              </v-btn>
-            </v-card-text>
-            <v-card-text class="text-center">
-              Already a member?
-              <router-link to="login">Log in here</router-link>
-            </v-card-text>
-          </v-card>
+          <validation-observer ref="signUpObserver">
+            <v-form>
+              <v-card outlined dark class="pa-10 mx-auto" max-width="400">
+                <v-card-title>Sign Up Here!</v-card-title>
+                <v-card-text>
+                  <validation-provider v-slot="{ errors }" rules="required">
+                    <v-text-field
+                      :error-messages="errors"
+                      dense
+                      dark
+                      prepend-inner-icon="mdi-account-cowboy-hat"
+                      outlined
+                      label="name"
+                      v-model="user.name"
+                    ></v-text-field>
+                  </validation-provider>
+                  <validation-provider v-slot="{ errors }" rules="required">
+                    <v-text-field
+                      :error-messages="errors"
+                      dense
+                      dark
+                      prepend-inner-icon="mdi-email"
+                      outlined
+                      label="email"
+                      v-model="user.email"
+                    ></v-text-field>
+                  </validation-provider>
+                  <validation-provider
+                    v-slot="{ errors }"
+                    rules="required|min:5"
+                  >
+                    <v-text-field
+                      :error-messages="errors"
+                      dense
+                      dark
+                      prepend-inner-icon="mdi-lock"
+                      outlined
+                      label="Password"
+                      v-model="user.password"
+                    ></v-text-field>
+                  </validation-provider>
+                  <v-btn text class="col-12 blue" @click="submit">Submit</v-btn>
+                </v-card-text>
+                <v-card-text class="text-center">
+                  or continue with a social profile
+                </v-card-text>
+                <v-card-text class="d-flex justify-space-around col-7 mx-auto">
+                  <v-btn
+                    icon
+                    large
+                    outlined
+                    id="google_btn"
+                    @click="initGoogleSignIn"
+                  >
+                    <v-icon>mdi-google</v-icon>
+                  </v-btn>
+                  <v-btn icon large outlined @click="gitHubSignin">
+                    <v-icon>mdi-github</v-icon>
+                  </v-btn>
+                </v-card-text>
+                <v-card-text class="text-center">
+                  Already a member?
+                  <router-link to="login">Log in here</router-link>
+                </v-card-text>
+              </v-card>
+            </v-form>
+          </validation-observer>
         </v-col>
       </v-row>
     </v-container>
@@ -63,8 +79,13 @@
 <script>
 import { mapActions } from "vuex";
 import { EventBus } from "@/event-bus";
+import { ValidationProvider, ValidationObserver } from "vee-validate";
 
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data() {
     return {
       user: {
@@ -90,9 +111,11 @@ export default {
       if (response.success) this.$router.push({ name: "chat" });
     },
     async submit() {
-      const response = await this.signup(this.user);
-      EventBus.$emit("showSnackbar", response);
-      if (response.success) this.$router.push({ name: "chat" });
+      if (await this.$refs.signUpObserver.validate()) {
+        const response = await this.signup(this.user);
+        EventBus.$emit("showSnackbar", response);
+        if (response.success) this.$router.push({ name: "chat" });
+      }
     },
   },
   created() {
