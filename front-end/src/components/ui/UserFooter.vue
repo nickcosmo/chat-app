@@ -5,9 +5,24 @@
     </v-avatar>
     {{ getUser.name }}
     <v-spacer></v-spacer>
-    <v-btn plain icon>
-      <v-icon>mdi-chevron-down</v-icon>
-    </v-btn>
+
+    <v-menu offset-y left top rounded="lg">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn plain icon v-bind="attrs" v-on="on">
+          <v-icon>mdi-chevron-down</v-icon>
+        </v-btn>
+      </template>
+      <v-list dense color="grey" class="darken-3">
+        <v-list-item-group>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon color="red">mdi-logout-variant</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="pr-4 red--text"> Logout </v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-menu>
   </v-footer>
 </template>
 
