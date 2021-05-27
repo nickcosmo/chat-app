@@ -12,13 +12,11 @@
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
       </template>
-      <v-list outlined flat rounded color="grey" class="darken-3">
+      <v-list outlined color="grey" class="darken-3">
         <v-list-item-group>
           <v-list-item class="mx-2" @click="logout">
-            <v-list-item-icon>
-              <v-icon color="red">mdi-logout-variant</v-icon>
-            </v-list-item-icon>
             <v-list-item-title class="pr-4 red--text">
+              <v-icon class="pr-2 mb-1" color="red">mdi-logout-variant</v-icon>
               Logout
             </v-list-item-title>
           </v-list-item>

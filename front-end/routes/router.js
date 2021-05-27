@@ -18,6 +18,18 @@ const router = new VueRouter({
             component: () => import(/* webpackChunkName: "signup" */ '../src/components/Signup.vue'),
         },
         {
+            path: '/success',
+            name: 'success',
+            component: () => import(/* webpackChunkName: "success" */ '../src/components/GitHubSuccess.vue'),
+            beforeEnter: (to, from, next) => {
+                if (from.name) {
+                    next({ name: 'login' });
+                } else {
+                    next();
+                }
+            },
+        },
+        {
             path: '/',
             name: 'chat',
             component: () => import(/* webpackChunkName: "main" */ '../src/components/Main.vue'),

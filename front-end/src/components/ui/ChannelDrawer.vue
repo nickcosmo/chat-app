@@ -36,11 +36,6 @@ import utilMixin from "@/mixins/util";
 
 export default {
   mixins: [utilMixin],
-  data() {
-    return {
-      mainDrawer: true,
-    };
-  },
   computed: {
     ...mapGetters("channel", ["getCurrentChannel"]),
   },

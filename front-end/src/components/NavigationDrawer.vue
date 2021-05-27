@@ -73,14 +73,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("channel", ["getSearchChannels"]),
+    ...mapGetters("channel", ["getSearchChannels", "getCurrentChannel"]),
     ...mapGetters("user", ["getUserId", "getUser"]),
     pageHeight() {
       return document.body.scrollHeight;
     },
   },
   methods: {
-    // TODO remove read ref?
     ...mapActions("channel", ["create", "getMessages"]),
     ...mapActions("user", ["addChannel"]),
     async postChannel(channel) {
@@ -95,9 +94,10 @@ export default {
       this.dialog = false;
     },
     async selectChannel(id) {
+      this.selectedChannel = true;
+      if (id === this.getCurrentChannel._id) return;
       try {
         await this.getMessages(id);
-        this.selectedChannel = true;
         this.$vuetify.goTo(this.pageHeight);
       } catch (err) {
         console.log(err);
@@ -105,9 +105,6 @@ export default {
     },
   },
   async created() {
-    // TODO remove?
-    // await this.read();
-
     if (
       this.$vuetify.breakpoint.name == "xs" ||
       this.$vuetify.breakpoint.name == "sm" ||
