@@ -2,6 +2,7 @@ const express = require('express');
 const authController = require('../controllers/auth-controller');
 const userController = require('../controllers/user-controller');
 const { body } = require('express-validator');
+const { jwtVerify } = require('../util/auth');
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post(
 router.post('/auth/login', body('email').trim().notEmpty().isString(), body('password').trim().notEmpty().isString(), userController.getUser);
 
 // /auth/logout => GET
-router.get('/auth/logout', userController.logOut);
+router.get('/auth/logout', jwtVerify, userController.logOut);
 
 // TODO auto login - review if needed
 // /auth/login => POST

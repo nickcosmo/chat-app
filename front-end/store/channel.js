@@ -40,7 +40,10 @@ export default {
         // eslint-disable-next-line no-unused-vars
         async create({ commit }, channelData) {
             try {
-                const newChannel = await axios.post(process.env.VUE_APP_API + '/channel', channelData);
+                const newChannel = await axios.post(process.env.VUE_APP_API + '/channel', channelData, {
+                    withCredentials: true,
+                    credentials: true,
+                });
                 if (newChannel.status === 200 && newChannel.data.success) {
                     console.log('newChannel -> ', newChannel);
                     commit('user/PUSH_USER_CHANNEL', newChannel.data.channel, { root: true });
@@ -66,7 +69,10 @@ export default {
         async postMessage({ commit }, messageData) {
             try {
                 // eslint-disable-next-line no-unused-vars
-                const newMessage = await axios.post(process.env.VUE_APP_API + '/message', messageData);
+                const newMessage = await axios.post(process.env.VUE_APP_API + '/message', messageData, {
+                    withCredentials: true,
+                    credentials: true,
+                });
             } catch (err) {
                 console.log(err);
                 EventBus.$emit('showSnackbar', {
@@ -88,7 +94,10 @@ export default {
                 let page = getters.getPage;
                 page = page.toString();
 
-                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId + '/?page=' + page);
+                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId + '/?page=' + page, {
+                    withCredentials: true,
+                    credentials: true,
+                });
                 if (response.status === 200 && response.data.success) {
                     response.data.messages.forEach((message) => {
                         message.date = new Date(message.date);
@@ -115,7 +124,10 @@ export default {
                 let page = getters.getPage;
                 page = page.toString();
 
-                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId + '/?page=' + page);
+                const response = await axios.get(process.env.VUE_APP_API + '/message/' + channelId + '/?page=' + page, {
+                    withCredentials: true,
+                    credentials: true,
+                });
 
                 if (response.status === 200 && response.data.success) {
                     response.data.messages.forEach((message) => {
@@ -134,7 +146,10 @@ export default {
         // eslint-disable-next-line no-unused-vars
         async searchChannels({ commit }, string) {
             try {
-                const response = await axios.post(process.env.VUE_APP_API + '/channel/search', string);
+                const response = await axios.post(process.env.VUE_APP_API + '/channel/search', string, {
+                    withCredentials: true,
+                    credentials: true,
+                });
                 if (response.status == 200 && response.data.success) {
                     return commit('UPDATE_SEARCH_CHANNELS', response.data.channels);
                 } else {

@@ -1,12 +1,14 @@
 const express = require('express');
 const channelController = require('../controllers/channel-controller');
 const { body } = require('express-validator');
+const { jwtVerify } = require('../util/auth');
 
 const router = express.Router();
 
 // /channel => POST
 router.post(
     '/channel',
+    jwtVerify,
     body('userId').trim().notEmpty().isString(),
     body('userName').trim().notEmpty().isString(),
     body('description').trim().notEmpty().isString(),
@@ -23,7 +25,7 @@ router.post(
 // router.get('/channel/:id', channelController.getChannelById);
 
 // /channel/search => POST
-router.post('/channel/search', body('string').trim().notEmpty().isString(), channelController.searchChannels);
+router.post('/channel/search', jwtVerify, body('string').trim().notEmpty().isString(), channelController.searchChannels);
 
 // /channel => DELETE
 
