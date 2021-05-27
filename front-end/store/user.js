@@ -200,7 +200,7 @@ export default {
                 };
             }
         },
-        // TODO auto login
+        // TODO auto login action
         // eslint-disable-next-line no-unused-vars
         async tryLogin({ commit }) {
             try {

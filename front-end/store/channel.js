@@ -27,17 +27,6 @@ export default {
         CONCAT_MESSAGES: (state, messages) => (state.messages = messages.concat(state.messages)),
     },
     actions: {
-        //TODO remove this?
-        // eslint-disable-next-line no-unused-vars
-        // async read({ commit }) {
-        //     try {
-        //         const channels = await axios.get(process.env.VUE_APP_API + '/channel');
-
-        //     } catch (err) {
-        //         console.log(err);
-        //     }
-        // },
-        // eslint-disable-next-line no-unused-vars
         async create({ commit }, channelData) {
             try {
                 const newChannel = await axios.post(process.env.VUE_APP_API + '/channel', channelData, {

@@ -31,6 +31,8 @@ export default {
   created() {
     if (this.$route.query.code) {
       this.gitHubSuccess();
+    } else {
+      this.$router.push({ name: "login" });
     }
   },
 };

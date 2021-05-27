@@ -33,26 +33,6 @@ class Channel {
         }
     }
 
-    // TODO review if needed
-    // static async fetchAll() {
-    //     try {
-    //         const db = getDb();
-    //         const channels = await db.collection('channels').find().toArray();
-    //         if (channels) {
-    //             return {
-    //                 channels: channels,
-    //                 success: true,
-    //             };
-    //         }
-    //     } catch (err) {
-    //         console.log(err);
-    //         return {
-    //             message: err.message,
-    //             success: false,
-    //         };
-    //     }
-    // }
-
     static async fetchById(channelId) {
         try {
             const db = getDb();

@@ -16,7 +16,6 @@ class User {
     async create() {
         try {
             const db = getDb();
-            // TODO add sign in when reading users
             const checkUser = await db.collection('users').findOne({ $and: [{ email: this.email }, { method: this.method }] });
             if (!checkUser) {
                 let hashedPassword = await bcrypt.hash(this.password, 12);
@@ -74,8 +73,6 @@ class User {
                 throw err;
             }
         } catch (err) {
-            // TODO remove for prod
-            console.log('read err -> ', err);
             return {
                 statusCode: err.statusCode ? err.statusCode : 500,
                 message: err.message,
@@ -151,27 +148,6 @@ class User {
             console.log(err);
             return {
                 statusCode: err.statusCode ? err.statusCode : 500,
-                message: err.message,
-                success: false,
-            };
-        }
-    }
-
-    // TODO review if this is necessary! -> add method!
-    static async readThirdParty(email) {
-        try {
-            const db = getDb();
-            const user = await db.collection('users').findOne({ email: email });
-            if (user) {
-                return {
-                    user: user,
-                    success: true,
-                };
-            }
-            return null;
-        } catch (err) {
-            console.log(err);
-            return {
                 message: err.message,
                 success: false,
             };

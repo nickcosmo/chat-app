@@ -125,7 +125,7 @@ exports.logOut = async (req, res, next) => {
     });
 };
 
-// TODO auto login - review if needed
+// TODO auto login controller
 exports.autoLogin = async (req, res, next) => {
     const _id = req.body._id;
 

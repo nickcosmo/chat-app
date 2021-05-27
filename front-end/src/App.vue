@@ -20,7 +20,7 @@ export default {
     ...mapActions("user", ["tryLogin"]),
   },
   created() {
-    // TODO for auto login
+    // TODO auto login init
     // this.tryLogin();
   },
 };

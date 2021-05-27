@@ -16,17 +16,7 @@ router.post(
     channelController.postAddChannel
 );
 
-// TODO remove?
-// /channel => GET
-// router.get('/channel', channelController.getChannels);
-
-// TODO review if needed
-// /channel/:id => GET
-// router.get('/channel/:id', channelController.getChannelById);
-
 // /channel/search => POST
 router.post('/channel/search', jwtVerify, body('string').trim().notEmpty().isString(), channelController.searchChannels);
-
-// /channel => DELETE
 
 exports.routes = router;
