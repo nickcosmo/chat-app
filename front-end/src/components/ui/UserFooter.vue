@@ -12,13 +12,15 @@
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
       </template>
-      <v-list dense color="grey" class="darken-3">
+      <v-list outlined flat rounded color="grey" class="darken-3">
         <v-list-item-group>
-          <v-list-item>
+          <v-list-item class="mx-2" @click="logout">
             <v-list-item-icon>
               <v-icon color="red">mdi-logout-variant</v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="pr-4 red--text"> Logout </v-list-item-title>
+            <v-list-item-title class="pr-4 red--text">
+              Logout
+            </v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -27,13 +29,16 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import utilMixin from "@/mixins/util";
 
 export default {
   mixins: [utilMixin],
   computed: {
     ...mapGetters("user", ["getUser"]),
+  },
+  methods: {
+    ...mapActions("user", ["logout"]),
   },
 };
 </script>

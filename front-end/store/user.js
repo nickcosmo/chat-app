@@ -15,6 +15,7 @@ export default {
         UPDATE_USER: (state, user) => (state.user = { ...user }),
         UPDATE_USER_CHANNELS: (state, channels) => (state.user.channels = channels),
         PUSH_USER_CHANNEL: (state, channel) => state.user.channels.push(channel),
+        CLEAR_USER: (state) => (state.user = null),
     },
     actions: {
         // eslint-disable-next-line no-unused-vars
@@ -163,9 +164,24 @@ export default {
             }
         },
         // eslint-disable-next-line no-unused-vars
+        async logout({ commit }) {
+            try {
+                const response = await axios.get(process.env.VUE_APP_API + '/auth/logout', { withCredentials: true, credentials: true });
+                if (response.status === 200 && response.data.success) {
+                    commit('CLEAR_USER');
+                    router.push({ name: 'login' });
+                }
+            } catch (err) {
+                EventBus.$emit('showSnackbar', {
+                    success: false,
+                    message: err.message,
+                });
+            }
+        },
+        // eslint-disable-next-line no-unused-vars
         async addChannel({ commit, dispatch }, data) {
             try {
-                const response = await axios.post(process.env.VUE_APP_API + '/user/channels', data);
+                const response = await axios.post(process.env.VUE_APP_API + '/user/channels', data, { withCredentials: true, credentials: true });
                 if (response.status === 200 && response.data.success) {
                     // eslint-disable-next-line no-unused-vars
                     const { channel, channels } = response.data;

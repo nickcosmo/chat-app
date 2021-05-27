@@ -23,6 +23,9 @@ router.post(
 // /auth/login => POST
 router.post('/auth/login', body('email').trim().notEmpty().isString(), body('password').trim().notEmpty().isString(), userController.getUser);
 
+// /auth/logout => GET
+router.get('/auth/logout', userController.logOut);
+
 // TODO auto login - review if needed
 // /auth/login => POST
 // router.post('/auth/auto-login', jwtVerify, userController.autoLogin);

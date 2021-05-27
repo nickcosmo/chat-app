@@ -119,6 +119,12 @@ exports.postAddChannelToUser = async (req, res, next) => {
     }
 };
 
+exports.logOut = async (req, res, next) => {
+    return res.status(200).clearCookie('jwt').clearCookie('auth').json({
+        success: true,
+    });
+};
+
 // TODO auto login - review if needed
 exports.autoLogin = async (req, res, next) => {
     const _id = req.body._id;
