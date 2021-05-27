@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import NavigationDrawer from "@/components/NavigationDrawer";
-import AppHeader from "@/components/AppHeader";
-import Chat from "@/components/Chat";
+import NavigationDrawer from "@/components/ui/NavigationDrawer";
+import AppHeader from "@/components/ui/AppHeader";
+import Chat from "@/components/ui/Chat";
 export default {
   components: {
     NavigationDrawer,

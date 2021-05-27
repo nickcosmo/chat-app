@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { EventBus } from "../event-bus";
+import { EventBus } from "@/event-bus";
 import utilMixin from "@/mixins/util";
 import { mapGetters } from "vuex";
 

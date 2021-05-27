@@ -50,12 +50,12 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { EventBus } from "../event-bus";
-import utilMixin from "../mixins/util";
-import UserFooter from "./ui/UserFooter";
-import ChannelModal from "./ui/ChannelModal";
-import ChannelDrawer from "./ui/ChannelDrawer";
-import SearchChannels from "./ui/SearchChannels";
+import { EventBus } from "@/event-bus";
+import utilMixin from "@/mixins/util";
+import UserFooter from "./UserFooter";
+import ChannelModal from "./ChannelModal";
+import ChannelDrawer from "./ChannelDrawer";
+import SearchChannels from "./SearchChannels";
 
 export default {
   mixins: [utilMixin],
