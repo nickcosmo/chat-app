@@ -1,5 +1,5 @@
 <template>
-  <v-container id="container">
+  <v-container id="container" class="chatContainer">
     <v-row class="d-flex justify-center">
       <v-col>
         <v-list dark class="grey darken-3">
@@ -16,7 +16,6 @@
             :key="message._id"
             class="grey darken-3 my-2"
           >
-            <!-- <v-divider dark></v-divider> -->
             <v-list-item-avatar
               rounded
               color="red"
@@ -113,7 +112,7 @@ export default {
     },
   },
   created() {
-    this.$vuetify.goTo(this.pageHeight);
+    this.$vuetify.goTo(document.body.scrollHeight);
 
     // init socket listeners
     socket.connect();
@@ -123,7 +122,7 @@ export default {
         const message = payload.message[0];
         message.date = new Date(message.date);
         this.ADD_MESSAGE(message);
-        this.$vuetify.goTo(this.pageHeight);
+        this.$vuetify.goTo(document.body.scrollHeight);
       }
     });
   },
@@ -131,6 +130,9 @@ export default {
     // turn socket listeners off!
     socket.off("newMessage");
     socket.disconnect();
+
+    // remove scroll listener
+    window.removeEventListener("scroll", null);
   },
   mounted() {
     window.addEventListener("scroll", () => {

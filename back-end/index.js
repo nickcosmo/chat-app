@@ -3,7 +3,14 @@ const bodyParser = require('body-parser');
 const mongoConnect = require('./util/database').mongoConnect;
 const cookieParser = require('cookie-parser');
 const io = require('./socket');
-require('dotenv').config();
+
+if (process.env.NODE_ENV === 'development') {
+    require('dotenv').config({ path: './.env.development' });
+}
+
+if (process.env.NODE_ENV === 'production') {
+    require('dotenv').config({ path: './.env.production' });
+}
 
 const app = express();
 
@@ -48,7 +55,6 @@ mongoConnect(async () => {
     });
     io.init(server);
     io.getIO().on('connection', (socket) => {
-
         socket.on('channel-connect', ({ channelId }) => {
             if (socket.rooms.has(channelId)) return;
             console.log(`Joining Channel: ${channelId}`);

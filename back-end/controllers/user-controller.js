@@ -22,7 +22,7 @@ exports.postUser = async (req, res, next) => {
         const response = await newUser.create();
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
-            return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
+            return res.status(200).cookie('jwt', token, { httpOnly: true }).json(response);
         } else {
             const err = new Error(response.message);
             err.statusCode = response.statusCode;
@@ -50,7 +50,7 @@ exports.getUser = async (req, res, next) => {
         const response = await User.read(email, password, method);
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
-            return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
+            return res.status(200).cookie('jwt', token, { httpOnly: true }).json(response);
         } else {
             const err = new Error(response.message);
             err.statusCode = response.statusCode;
@@ -73,7 +73,7 @@ exports.userAuthThirdParty = async (req, res, next) => {
         const response = await newUser.authThirdParty();
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
-            return res.status(200).cookie('jwt', token, { httpOnly: true }).cookie('auth', true).json(response);
+            return res.status(200).cookie('jwt', token, { httpOnly: true }).json(response);
         } else {
             const err = new Error(response.message);
             err.statusCode = response.statusCode;
@@ -120,7 +120,7 @@ exports.postAddChannelToUser = async (req, res, next) => {
 };
 
 exports.logOut = async (req, res, next) => {
-    return res.status(200).clearCookie('jwt').clearCookie('auth').json({
+    return res.status(200).clearCookie('jwt').json({
         success: true,
     });
 };

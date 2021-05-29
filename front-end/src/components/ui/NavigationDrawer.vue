@@ -75,9 +75,6 @@ export default {
   computed: {
     ...mapGetters("channel", ["getSearchChannels", "getCurrentChannel"]),
     ...mapGetters("user", ["getUserId", "getUser"]),
-    pageHeight() {
-      return document.body.scrollHeight;
-    },
   },
   methods: {
     ...mapActions("channel", ["create", "getMessages"]),
@@ -98,7 +95,7 @@ export default {
       if (id === this.getCurrentChannel._id) return;
       try {
         await this.getMessages(id);
-        this.$vuetify.goTo(this.pageHeight);
+        this.$vuetify.goTo(document.body.scrollHeight);
       } catch (err) {
         console.log(err);
       }

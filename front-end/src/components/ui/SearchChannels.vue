@@ -93,6 +93,15 @@ export default {
       }
     },
     async pushAddChannel(channelId, channelName) {
+      // check if user already a part of the channel first
+      if (this.getUser.channels.find((channel) => channel._id === channelId)) {
+        EventBus.$emit("showSnackbar", {
+          message: "You are already a member of this channel!",
+          success: false,
+        });
+        return;
+      }
+
       const userName = this.getUser.name;
       const userId = this.getUser._id;
       const payload = {

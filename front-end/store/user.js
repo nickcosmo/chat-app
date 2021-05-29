@@ -165,6 +165,7 @@ export default {
         },
         // eslint-disable-next-line no-unused-vars
         async logout({ commit }) {
+            commit('channel/RESET_PAGE', null, { root: true });
             try {
                 const response = await axios.get(process.env.VUE_APP_API + '/auth/logout', { withCredentials: true, credentials: true });
                 if (response.status === 200 && response.data.success) {

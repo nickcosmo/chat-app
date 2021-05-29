@@ -25,7 +25,7 @@ router.post(
 router.post('/auth/login', body('email').trim().notEmpty().isString(), body('password').trim().notEmpty().isString(), userController.getUser);
 
 // /auth/logout => GET
-router.get('/auth/logout', jwtVerify, userController.logOut);
+router.get('/auth/logout', userController.logOut);
 
 // TODO auto login route
 // /auth/login => POST
