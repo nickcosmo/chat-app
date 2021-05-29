@@ -110,6 +110,11 @@ export default {
       await this.getPaginatedMessages(this.getCurrentChannel._id);
       this.paginationRequest = false;
     },
+    scrollTrigger() {
+      if (document.documentElement.scrollTop === 0) {
+        this.paginateMessages();
+      }
+    },
   },
   created() {
     this.$vuetify.goTo(document.body.scrollHeight);
@@ -130,16 +135,13 @@ export default {
     // turn socket listeners off!
     socket.off("newMessage");
     socket.disconnect();
-
+  },
+  beforeDestroy() {
     // remove scroll listener
-    window.removeEventListener("scroll", null);
+    window.removeEventListener("scroll", this.scrollTrigger);
   },
   mounted() {
-    window.addEventListener("scroll", () => {
-      if (document.documentElement.scrollTop === 0) {
-        this.paginateMessages();
-      }
-    });
+    window.addEventListener("scroll", this.scrollTrigger);
   },
 };
 </script>
