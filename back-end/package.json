@@ -5,8 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "serve_dev": "nodemon index.js",
-        "serve_prod": "nodemon index.js"
+        "serve": "nodemon index.js"
     },
     "author": "Nick Lansing",
     "license": "ISC",
