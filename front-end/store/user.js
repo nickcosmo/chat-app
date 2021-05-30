@@ -115,6 +115,9 @@ export default {
                 const response = await axios.post(process.env.VUE_APP_API + '/auth/signup', userData, {
                     withCredentials: true,
                     credentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 });
                 if (response.status === 200 && response.data.success) {
                     const user = response.data.user;

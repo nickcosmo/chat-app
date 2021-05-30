@@ -50,7 +50,7 @@ app.use((err, req, res, next) => {
 // establish connection
 let server;
 mongoConnect(async () => {
-    server = await app.listen(3000, () => {
+    server = await app.listen(8080, () => {
         console.log('connected!');
     });
     io.init(server);
