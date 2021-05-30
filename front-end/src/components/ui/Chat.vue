@@ -110,6 +110,7 @@ export default {
           date: new Date(),
         });
         this.$refs.messageForm.reset();
+        this.$refs.chatObserver.reset();
       }
     },
     async paginateMessages() {
