@@ -30,12 +30,15 @@
                   >
                     <v-text-field
                       :error-messages="errors"
+                      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="showPassword ? 'text' : 'password'"
                       dense
                       dark
                       prepend-inner-icon="mdi-lock"
                       outlined
                       label="Password"
                       v-model="user.password"
+                      @click:append="showPassword = !showPassword"
                     ></v-text-field>
                   </validation-provider>
 
@@ -77,6 +80,7 @@ export default {
   },
   data() {
     return {
+      showPassword: false,
       user: {
         email: null,
         password: null,

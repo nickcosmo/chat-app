@@ -19,7 +19,7 @@
                       v-model="user.name"
                     ></v-text-field>
                   </validation-provider>
-                  <validation-provider v-slot="{ errors }" rules="required">
+                  <validation-provider v-slot="{ errors }" rules="required|email">
                     <v-text-field
                       :error-messages="errors"
                       dense
@@ -40,6 +40,9 @@
                       dark
                       prepend-inner-icon="mdi-lock"
                       outlined
+                      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="showPassword ? 'text' : 'password'"
+                      @click:append="showPassword = !showPassword"
                       label="Password"
                       v-model="user.password"
                     ></v-text-field>
@@ -88,6 +91,7 @@ export default {
   },
   data() {
     return {
+      showPassword: false,
       user: {
         name: null,
         email: null,
