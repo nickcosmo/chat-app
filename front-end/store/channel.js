@@ -34,7 +34,6 @@ export default {
                     credentials: true,
                 });
                 if (newChannel.status === 200 && newChannel.data.success) {
-                    console.log('newChannel -> ', newChannel);
                     commit('user/PUSH_USER_CHANNEL', newChannel.data.channel, { root: true });
                     return {
                         success: true,
