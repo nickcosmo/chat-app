@@ -46,7 +46,7 @@
         <v-footer class="grey darken-3 pb-15" app inset height="82">
           <v-row class="d-flex justify-center">
             <v-col class="col-12 col-md-10">
-              <v-form ref="messageForm">
+              <v-form ref="messageForm" @submit.prevent>
                 <v-text-field
                   :error-messages="errors"
                   background-color="grey darken-1"

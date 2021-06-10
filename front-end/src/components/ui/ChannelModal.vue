@@ -1,6 +1,6 @@
 <template>
   <validation-observer ref="channelObserver">
-    <v-form>
+    <v-form @submit.prevent>
       <v-card class="pa-4" dark>
         <v-card-title>NEW CHANNEL</v-card-title>
         <validation-provider v-slot="{ errors }" rules="required">

@@ -4,7 +4,7 @@
       <v-row class="justify-center">
         <v-col class="col-12 col-md-5">
           <validation-observer ref="loginObserver">
-            <v-form ref="form">
+            <v-form ref="form" @submit.prevent>
               <v-card outlined dark class="pa-10 mx-auto" max-width="400">
                 <v-card-title>Log In Here!</v-card-title>
                 <v-card-text>

@@ -4,7 +4,7 @@
       <v-row class="justify-center">
         <v-col class="col-12 col-md-5">
           <validation-observer ref="signUpObserver">
-            <v-form>
+            <v-form @submit.prevent>
               <v-card outlined dark class="pa-10 mx-auto" max-width="400">
                 <v-card-title>Sign Up Here!</v-card-title>
                 <v-card-text>
@@ -19,7 +19,10 @@
                       v-model="user.name"
                     ></v-text-field>
                   </validation-provider>
-                  <validation-provider v-slot="{ errors }" rules="required|email">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    rules="required|email"
+                  >
                     <v-text-field
                       :error-messages="errors"
                       dense
