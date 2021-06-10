@@ -26,14 +26,14 @@
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-subtitle>
-                <span class="text-subtitle-1">
+                <span>
                   {{ message.userName }}
                 </span>
                 <span class="ml-3">
                   {{ message.date | toDate }}
                 </span>
               </v-list-item-subtitle>
-              <v-list-item-title class="mt-1">
+              <v-list-item-title class="mt-2">
                 {{ message.body }}
               </v-list-item-title>
             </v-list-item-content>
@@ -132,6 +132,10 @@ export default {
   },
   filters: {
     toDate: (messageDate) => {
+      const local = new Date();
+      const localOffset = local.getTimezoneOffset();
+      const dateMins = messageDate.getMinutes();
+      messageDate.setMinutes(dateMins - localOffset);
       let date = messageDate.toUTCString();
       return date.slice(0, 22);
     },
