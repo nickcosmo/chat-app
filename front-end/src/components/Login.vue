@@ -12,6 +12,7 @@
                     name="Email"
                     v-slot="{ errors }"
                     rules="required|email"
+                    mode="lazy"
                   >
                     <v-text-field
                       :error-messages="errors"
@@ -21,12 +22,14 @@
                       outlined
                       label="Email"
                       v-model="user.email"
+                      required
                     ></v-text-field>
                   </validation-provider>
                   <validation-provider
                     name="Password"
                     v-slot="{ errors }"
                     rules="required"
+                    mode="lazy"
                   >
                     <v-text-field
                       :error-messages="errors"

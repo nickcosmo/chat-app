@@ -8,7 +8,11 @@
               <v-card outlined dark class="pa-10 mx-auto" max-width="400">
                 <v-card-title>Sign Up Here!</v-card-title>
                 <v-card-text>
-                  <validation-provider v-slot="{ errors }" rules="required">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    rules="required"
+                    mode="lazy"
+                  >
                     <v-text-field
                       :error-messages="errors"
                       dense
@@ -22,6 +26,7 @@
                   <validation-provider
                     v-slot="{ errors }"
                     rules="required|email"
+                    mode="lazy"
                   >
                     <v-text-field
                       :error-messages="errors"
@@ -36,6 +41,7 @@
                   <validation-provider
                     v-slot="{ errors }"
                     rules="required|min:5"
+                    mode="lazy"
                   >
                     <v-text-field
                       :error-messages="errors"

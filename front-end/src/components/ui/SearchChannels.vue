@@ -1,7 +1,7 @@
 <template>
   <div>
     <validation-observer ref="searchObserver">
-      <validation-provider v-slot="{ errors }" rules="required">
+      <validation-provider v-slot="{ errors }" rules="required" mode="passive">
         <v-text-field
           :error-messages="errors"
           label="Search"

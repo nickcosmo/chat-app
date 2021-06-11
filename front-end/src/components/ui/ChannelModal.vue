@@ -3,7 +3,7 @@
     <v-form @submit.prevent>
       <v-card class="pa-4" dark>
         <v-card-title>NEW CHANNEL</v-card-title>
-        <validation-provider v-slot="{ errors }" rules="required">
+        <validation-provider v-slot="{ errors }" rules="required" mode="lazy">
           <v-text-field
             :error-messages="errors"
             class="px-4"
@@ -12,7 +12,7 @@
             v-model="newChannelName"
           ></v-text-field>
         </validation-provider>
-        <validation-provider v-slot="{ errors }" rules="required">
+        <validation-provider v-slot="{ errors }" rules="required" mode="lazy">
           <v-textarea
             :error-messages="errors"
             class="px-4"

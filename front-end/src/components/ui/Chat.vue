@@ -42,7 +42,7 @@
       </v-col>
     </v-row>
     <validation-observer ref="chatObserver">
-      <validation-provider v-slot="{ errors }" rules="required">
+      <validation-provider v-slot="{ errors }" rules="required" mode="passive">
         <v-footer class="grey darken-3 pb-15" app inset height="82">
           <v-row class="d-flex justify-center">
             <v-col class="col-12 col-md-10">
