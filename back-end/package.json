@@ -5,6 +5,8 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
+        "serve_dev": "set NODE_ENV=development&&nodemon index.js",
+        "serve_prod": "set NODE_ENV=production&&nodemon index.js",
         "serve": "nodemon index.js",
         "start": "node index.js"
     },
