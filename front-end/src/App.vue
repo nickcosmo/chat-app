@@ -1,9 +1,6 @@
 <template>
   <v-app>
     <Snackbar />
-    <!-- <v-system-bar app dark height="75">
-      <v-toolbar-title class="display-1">CHAPPIE</v-toolbar-title>
-    </v-system-bar> -->
     <router-view></router-view>
   </v-app>
 </template>
