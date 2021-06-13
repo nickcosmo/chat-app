@@ -204,15 +204,5 @@ export default {
                 };
             }
         },
-        // TODO auto login action
-        // eslint-disable-next-line no-unused-vars
-        async tryLogin({ commit }) {
-            try {
-                const response = await axios.post(process.env.VUE_APP_API + '/auth/auto-login', null, { withCredentials: true, credentials: true });
-                console.log(response);
-            } catch (err) {
-                console.log(err);
-            }
-        },
     },
 };

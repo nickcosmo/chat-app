@@ -19,9 +19,5 @@ export default {
   methods: {
     ...mapActions("user", ["tryLogin"]),
   },
-  created() {
-    // TODO auto login init
-    // this.tryLogin();
-  },
 };
 </script>
