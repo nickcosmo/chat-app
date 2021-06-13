@@ -2,6 +2,7 @@ const User = require('../models/user');
 const Channel = require('../models/channel');
 const jwtUtil = require('../util/auth');
 const { validationResult } = require('express-validator');
+const cookieMaxAge = 3 * 60 * 60 * 1000;
 
 exports.postUser = async (req, res, next) => {
     try {
@@ -22,7 +23,7 @@ exports.postUser = async (req, res, next) => {
         const response = await newUser.create();
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
-            return res.status(200).cookie('jwt', token, { sameSite: 'None', secure: true }).json(response);
+            return res.status(200).cookie('jwt', token, { sameSite: 'None', secure: true, path: '/', maxAge: cookieMaxAge }).json(response);
         } else {
             const err = new Error(response.message);
             err.statusCode = response.statusCode;
@@ -50,7 +51,7 @@ exports.getUser = async (req, res, next) => {
         const response = await User.read(email, password, method);
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
-            return res.status(200).cookie('jwt', token, { sameSite: 'None', secure: true }).json(response);
+            return res.status(200).cookie('jwt', token, { sameSite: 'None', secure: true, path: '/', maxAge: cookieMaxAge }).json(response);
         } else {
             const err = new Error(response.message);
             err.statusCode = response.statusCode;
@@ -73,7 +74,7 @@ exports.userAuthThirdParty = async (req, res, next) => {
         const response = await newUser.authThirdParty();
         if (response.success) {
             const token = await jwtUtil.jwtSign(response.user._id);
-            return res.status(200).cookie('jwt', token, { sameSite: 'None', secure: true }).json(response);
+            return res.status(200).cookie('jwt', token, { sameSite: 'None', secure: true, path: '/', maxAge: cookieMaxAge }).json(response);
         } else {
             const err = new Error(response.message);
             err.statusCode = response.statusCode;
@@ -123,16 +124,4 @@ exports.logOut = async (req, res, next) => {
     return res.status(200).clearCookie('jwt', { sameSite: 'None', secure: true }).json({
         success: true,
     });
-};
-
-// TODO auto login controller
-exports.autoLogin = async (req, res, next) => {
-    const _id = req.body._id;
-
-    try {
-        // get user details by id
-        console.log(_id);
-    } catch (err) {
-        console.log(err);
-    }
 };
