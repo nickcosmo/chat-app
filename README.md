@@ -2,6 +2,11 @@
 
 This is my submission to this full stack [dev challenge](https://devchallenges.io/challenges/UgCqszKR7Q7oqb4kRfI0) (although I took some creative liberties).
 
+What does this app do? - This is a full stack real time messaging application utilizing full stack JavaScript (see below for complete stack details). Some key features of this application include:
+-   Authentication - using JWT or third party auth utlizing both Google and Github sign in options.
+-   Real Time Communication - messages are sent in each channel in real time thanks to [Socket.io](https://socket.io/).
+-   REST API Architecture - the back end is a Node.js application which processes requests from the user to fetch data and process user actions.
+
 See the live site [here](https://chat-app-7c403.web.app/)!
 
 ## Tech
